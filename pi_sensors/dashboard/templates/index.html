@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SENSOR-01 - DHT22</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --panel: #F7F7F7;
+    --panel-border: #DDDDDD;
+    --text: #111111;
+    --text-muted: #555555;
+    --heading: #D32F2F;
+    --accent-live: #2E9E90;
+    --accent-warn: #C97A2B;
+    --grid-line: #E5E5E5;
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--heading);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .title strong {
+    color: var(--heading);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-live);
+    box-shadow: 0 0 0 0 rgba(46, 158, 144, 0.5);
+    animation: pulse 2s infinite;
+  }
+
+  .dot.stale {
+    background: var(--accent-warn);
+    box-shadow: none;
+    animation: none;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(46, 158, 144, 0.4); }
+    70%  { box-shadow: 0 0 0 8px rgba(46, 158, 144, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 158, 144, 0); }
+  }
+
+  .readouts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 560px) {
+    .readouts { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 20px 22px;
+  }
+
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--heading);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .panel-value {
+    font-family: var(--font-mono);
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .panel-value .unit {
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  .panel-sub {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  .chart-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+    height: 320px;
+  }
+
+  .table-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .table-scroll {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    text-align: left;
+    padding: 12px 22px;
+    color: var(--heading);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  tbody td {
+    padding: 9px 22px;
+    border-bottom: 1px solid var(--grid-line);
+    color: var(--text);
+  }
+
+  tbody tr:first-child td {
+    color: var(--accent-live);
+  }
+
+  .empty-state {
+    padding: 40px 22px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title"><strong>SENSOR-01</strong> - DHT22 TEMP/HUMIDITY</div>
+      <div class="status">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">CONNECTING...</span>
+      </div>
+    </header>
+
+    <div class="readouts">
+      <div class="panel">
+        <div class="panel-label">Temperature</div>
+        <div class="panel-value" id="tempValue">--<span class="unit">C</span></div>
+        <div class="panel-sub" id="tempSub">-- F</div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">Humidity</div>
+        <div class="panel-value" id="humValue">--<span class="unit">%</span></div>
+        <div class="panel-sub" id="humSub">relative humidity</div>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <canvas id="chart"></canvas>
+    </div>
+
+    <div class="table-panel">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Temp (C)</th>
+              <th>Temp (F)</th>
+              <th>Humidity (%)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const POLL_INTERVAL_MS = 5000;
+  let chart = null;
+
+  function initChart() {
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js failed to load (likely blocked by network/VPN/firewall). Chart will be skipped, but live readings and table will still work.');
+      chart = null;
+      return;
+    }
+    try {
+      const ctx = document.getElementById('chart').getContext('2d');
+      chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Temp (C)',
+            data: [],
+            borderColor: '#2E9E90',
+            backgroundColor: 'rgba(46, 158, 144, 0.08)',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0,
+            yAxisID: 'y'
+          },
+          {
+            label: 'Humidity (%)',
+            data: [],
+            borderColor: '#C97A2B',
+            backgroundColor: 'rgba(201, 122, 43, 0.08)',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            labels: { color: '#555555', font: { family: 'ui-monospace', size: 11 } }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#555555', maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
+            grid: { color: '#E5E5E5' }
+          },
+          y: {
+            position: 'left',
+            ticks: { color: '#2E9E90' },
+            grid: { color: '#E5E5E5' }
+          },
+          y1: {
+            position: 'right',
+            ticks: { color: '#C97A2B' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+    } catch (err) {
+      console.error('Chart init failed (chart will be skipped, live data will still work):', err);
+      chart = null;
+    }
+  }
+
+  function setStatus(ok) {
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    if (ok) {
+      dot.classList.remove('stale');
+      text.textContent = 'LIVE';
+    } else {
+      dot.classList.add('stale');
+      text.textContent = 'NO DATA';
+    }
+  }
+
+  function renderLatest(latest) {
+    if (!latest) {
+      setStatus(false);
+      return;
+    }
+    setStatus(true);
+    document.getElementById('tempValue').innerHTML = `${latest.temperature_c}<span class="unit">C</span>`;
+    document.getElementById('tempSub').textContent = `${latest.temperature_f}F`;
+    document.getElementById('humValue').innerHTML = `${latest.humidity_pct}<span class="unit">%</span>`;
+    document.getElementById('humSub').textContent = `as of ${latest.timestamp}`;
+  }
+
+  function renderTable(readings) {
+    const body = document.getElementById('tableBody');
+    if (!readings.length) {
+      body.innerHTML = '<tr><td colspan="4" class="empty-state">No readings logged yet</td></tr>';
+      return;
+    }
+    const reversed = [...readings].reverse();
+    body.innerHTML = reversed.map(r => `
+      <tr>
+        <td>${r.timestamp}</td>
+        <td>${r.temperature_c}</td>
+        <td>${r.temperature_f}</td>
+        <td>${r.humidity_pct}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderChart(readings) {
+    if (!chart) return;
+    const recent = readings.slice(-60);
+    chart.data.labels = recent.map(r => r.timestamp.split('T')[1] || r.timestamp);
+    chart.data.datasets[0].data = recent.map(r => parseFloat(r.temperature_c));
+    chart.data.datasets[1].data = recent.map(r => parseFloat(r.humidity_pct));
+    chart.update();
+  }
+
+  async function poll() {
+    try {
+      const res = await fetch('/api/data');
+      const data = await res.json();
+      renderLatest(data.latest);
+      renderTable(data.readings);
+      renderChart(data.readings);
+    } catch (err) {
+      setStatus(false);
+      console.error('Failed to fetch sensor data', err);
+    }
+  }
+
+  initChart();
+  poll();
+  setInterval(poll, POLL_INTERVAL_MS);
+</script>
+</body>
+</html>
