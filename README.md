@@ -8,11 +8,18 @@ events from a PIR sensor on a Raspberry Pi 5, with console output, CSV
 logging, and a live web dashboard for the DHT22 data.
 
 # HARDWARE
+## Hardware Environment
 
-DHT22 (temperature/humidity): VCC -> Pin 4 (5V), Data -> Pin 11 (GPIO17), GND -> Pin 9 (Ground)
-PIR (motion): VCC -> Pin 2 (5V), Data -> Pin 12 (GPIO18), GND -> Pin 14 (Ground)
-
-Pin numbers refer to the physical 40-pin GPIO header, not BCM GPIO numbers.
+| Hardware | Specification / Configuration | Role in Project |
+|---|---|---|
+| Raspberry Pi 5 | Broadcom BCM2712 2.4 GHz quad-core 64-bit Arm Cortex-A76 CPU; 4 GB LPDDR4X RAM; 32 GB microSD storage; dual-band 802.11ac Wi-Fi; standard 40-pin GPIO header; USB-C power | Primary IoT platform that runs the Python sensor applications, CSV logging, Flask dashboard, and later cybersecurity controls and monitoring |
+| Development/Test Laptop | Dell G5 5505; AMD Ryzen 7 4800H @ 2.90 GHz; 8 cores / 16 logical processors; 16 GB RAM; x64 architecture; Windows 11 Home Single Language | Used for development, Git/GitHub access, SSH administration, dashboard testing, documentation, and authorized cybersecurity assessment of the Raspberry Pi |
+| DHT22 Sensor | Digital temperature and humidity sensor; VCC connected to physical Pin 4, data to Pin 11 (GPIO17), and GND to Pin 9 | Collects temperature and humidity data for console output, CSV logging, and dashboard visualization |
+| PIR Motion Sensor | Passive infrared motion sensor; VCC connected to physical Pin 2, output to Pin 12 (GPIO18), and GND to Pin 14 | Intended to detect and log motion events; currently undergoing hardware troubleshooting |
+| microSD Card | 32 GB | Stores Raspberry Pi OS, application source code, Python environment, sensor logs, configuration files, and project data |
+| Network Connection | Home Wi-Fi using the Raspberry Pi 5's integrated dual-band 802.11ac wireless interface | Connects the Raspberry Pi and development laptop on the same local network for dashboard access, SSH administration, and controlled security testing |
+| Power Connection | Raspberry Pi powered through its USB-C power interface using a wall-connected USB-C power source | Provides continuous power to the Raspberry Pi and connected sensor environment |
+| Prototyping Components | Jumper wires and GPIO connections | Provide power, ground, and signal connections between the Raspberry Pi and sensors |
 
 # SOFTWARE SETUP
 
