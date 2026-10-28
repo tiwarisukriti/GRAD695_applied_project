@@ -1,0 +1,10 @@
+# Nmap 7.94SVN scan initiated Sun Oct 25 14:19:15 2026 as: nmap -6 -sT -Pn -p 22,111,5000 -oN baseline_ipv6.txt 2604:2a00:ffd0:42b0:8aa2:9eff:fe67:6eb2
+Nmap scan report for 2604:2a00:ffd0:42b0:8aa2:9eff:fe67:6eb2
+Host is up (0.00029s latency).
+
+PORT     STATE    SERVICE
+22/tcp   filtered ssh
+111/tcp  filtered rpcbind
+5000/tcp filtered upnp
+
+# Nmap done at Sun Oct 25 14:19:15 2026 -- 1 IP address (1 host up) scanned in 0.07 seconds

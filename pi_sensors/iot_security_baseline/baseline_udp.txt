@@ -1,0 +1,9 @@
+# Nmap 7.94SVN scan initiated Sun Oct 25 14:07:01 2026 as: nmap -sU -Pn -p 111,5353 -oN baseline_udp.txt 192.168.88.230
+Nmap scan report for 192.168.88.230
+Host is up (0.0024s latency).
+
+PORT     STATE SERVICE
+111/udp  open  rpcbind
+5353/udp open  zeroconf
+
+# Nmap done at Sun Oct 25 14:07:02 2026 -- 1 IP address (1 host up) scanned in 0.30 seconds
