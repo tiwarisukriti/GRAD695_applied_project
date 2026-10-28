@@ -91,7 +91,7 @@
     animation: pulse 2s infinite;
   }
 
-  /* Show a static warning-colored dot when DHT22 data is unavailable. */
+  /* Show a static warning-colored dot for missing, stale, or invalid data. */
   .dot.stale {
     background: var(--accent-warn);
     box-shadow: none;
@@ -113,9 +113,13 @@
     margin-bottom: 24px;
   }
 
+  /* Use three balanced columns for run identity, reliability, and trace time. */
+  .trial-readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
   /* Stack sensor cards vertically on narrow/mobile screens. */
   @media (max-width: 560px) {
-    .readouts { grid-template-columns: 1fr; }
+    .readouts,
+    .trial-readouts { grid-template-columns: 1fr; }
   }
 
   /* Style the shared cards for measurements and PIR event statistics. */
@@ -244,6 +248,18 @@
   /* Separate the new PIR section from the DHT22 table above it. */
   .pir-section { margin-top: 34px; }
 
+  /* Keep the trial measurements visually separate from sensor readings. */
+  .trial-section { margin-bottom: 30px; }
+
+  /* Let long UUIDs and synchronized timestamps wrap on small screens. */
+  .trace-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+
   /* Motion status uses smaller lettering to fit words inside the card. */
   .pir-value { font-size: clamp(20px, 3vw, 27px); line-height: 1.3; }
 
@@ -266,6 +282,31 @@
         <span id="statusText">CONNECTING...</span>
       </div>
     </header>
+
+    <!-- Show the run ID, attempt-based reliability, and logger/API/browser times. -->
+    <section class="trial-section" aria-labelledby="trialHeading">
+      <h2 class="section-heading" id="trialHeading">INSTRUMENTED TRIAL TRACE</h2>
+      <div class="readouts trial-readouts">
+        <div class="panel">
+          <div class="panel-label">Trial status / run ID</div>
+          <div class="panel-value pir-value" id="trialStatus">NO TRIAL</div>
+          <div class="panel-sub trace-value" id="trialRunId">No instrumented run loaded</div>
+          <div class="panel-sub trace-value" id="trialTiming">No trial timing data</div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">DHT22 acquisition reliability</div>
+          <div class="panel-value"><span id="reliabilityValue">--</span><span class="unit">%</span></div>
+          <div class="panel-sub" id="attemptCount">No acquisition attempts recorded</div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">Logger / API / browser (UTC)</div>
+          <div class="panel-sub trace-value">Logger: <span id="traceLogger">--</span></div>
+          <div class="panel-sub trace-value">API: <span id="traceApi">--</span></div>
+          <div class="panel-sub trace-value">Browser: <span id="traceDashboard">--</span></div>
+          <div class="panel-sub trace-value">API response: <span id="traceHttpStatus">--</span></div>
+        </div>
+      </div>
+    </section>
 
     <!-- SENSOR 01: DHT22. All existing temperature/humidity cards are kept. -->
     <section aria-labelledby="dhtHeading">
@@ -443,27 +484,49 @@
     }
   }
 
-  // Set the top header indicator based on whether DHT22 data was returned.
-  // This matches the original behavior: "LIVE" means data is available,
-  // NOT that we have independently verified the collector is still running.
-  function setStatus(ok) {
+  // Mark old CSV values as historical instead of presenting them as live data.
+  function setStatus(freshness) {
     const dot = document.getElementById('statusDot');
     const text = document.getElementById('statusText');
+    const status = freshness ? freshness.status : 'unknown';
+    const age = freshness && Number.isFinite(freshness.age_seconds)
+      ? `${freshness.age_seconds.toFixed(1)}s`
+      : '';
 
-    if (ok) {
+    if (status === 'fresh') {
       dot.classList.remove('stale');
       text.textContent = 'LIVE';
+    } else if (status === 'stale') {
+      dot.classList.add('stale');
+      text.textContent = `STALE DHT22 DATA${age ? ` (${age})` : ''}`;
+    } else if (status === 'clock_ahead') {
+      dot.classList.add('stale');
+      text.textContent = 'CHECK DEVICE CLOCK';
+    } else if (status === 'invalid') {
+      dot.classList.add('stale');
+      text.textContent = 'INVALID SENSOR TIMESTAMP';
+    } else if (status === 'unavailable') {
+      dot.classList.add('stale');
+      text.textContent = 'API UNAVAILABLE';
     } else {
       dot.classList.add('stale');
       text.textContent = 'NO DHT22 DATA';
     }
   }
 
-  // Update the temperature and humidity cards with the latest DHT22 CSV row.
-  function renderLatest(latest) {
+  // Describe sample age using the API's Pi-side freshness calculation.
+  function describeFreshness(freshness) {
+    if (!freshness || freshness.status === 'unknown') return 'age unknown';
+    if (freshness.status === 'invalid') return 'timestamp invalid';
+    if (freshness.status === 'clock_ahead') return 'device clock is ahead';
+    return `${freshness.status}; ${freshness.age_seconds.toFixed(1)}s old`;
+  }
+
+  // Update DHT22 values without implying an old CSV row is a current sample.
+  function renderLatest(latest, freshness) {
     if (!latest) {
       // Show placeholders when the selected CSV has no valid DHT22 rows.
-      setStatus(false);
+      setStatus(freshness);
       document.getElementById('tempValue').textContent = '--';
       document.getElementById('tempSub').textContent = '-- F';
       document.getElementById('humValue').textContent = '--';
@@ -471,12 +534,53 @@
       return;
     }
 
-    setStatus(true);
+    setStatus(freshness);
     // textContent shows CSV values as text, not as executable HTML.
     document.getElementById('tempValue').textContent = latest.temperature_c;
     document.getElementById('tempSub').textContent = `${latest.temperature_f}F`;
     document.getElementById('humValue').textContent = latest.humidity_pct;
-    document.getElementById('humSub').textContent = `as of ${latest.timestamp}`;
+    document.getElementById('humSub').textContent =
+      `as of ${latest.timestamp} · ${describeFreshness(freshness)}`;
+  }
+
+  // Display the latest run's denominator and its matching logger/API/browser times.
+  function renderTrial(trial, trace, dashboardReceivedAt) {
+    const status = document.getElementById('trialStatus');
+    const runId = document.getElementById('trialRunId');
+    const reliability = document.getElementById('reliabilityValue');
+    const attempts = document.getElementById('attemptCount');
+    const timing = document.getElementById('trialTiming');
+
+    if (!trial) {
+      status.textContent = 'NO TRIAL';
+      runId.textContent = 'No instrumented run loaded';
+      reliability.textContent = '--';
+      attempts.textContent = 'No acquisition attempts recorded';
+      timing.textContent = 'No trial timing data';
+    } else {
+      status.textContent = String(trial.status || 'UNKNOWN').toUpperCase();
+      runId.textContent = trial.run_id || 'Run ID unavailable';
+      reliability.textContent = trial.reliability_pct === null
+        ? '--'
+        : Number(trial.reliability_pct).toFixed(2);
+      attempts.textContent =
+        `${trial.successes} valid / ${trial.attempts} attempts; ` +
+        `${trial.failures} failed`;
+      const elapsed = trial.elapsed_seconds === null
+        ? '--'
+        : Number(trial.elapsed_seconds).toFixed(1);
+      timing.textContent =
+        `Elapsed ${elapsed} / ${trial.duration_seconds ?? '--'} s; ` +
+        `started ${trial.started_at_utc || 'unknown'}`;
+    }
+
+    // Keep all three timestamps visible so a captured browser view can be
+    // matched against the logger CSV row and the exact API response.
+    document.getElementById('traceLogger').textContent =
+      trace && trace.logger_timestamp_utc ? trace.logger_timestamp_utc : '--';
+    document.getElementById('traceApi').textContent =
+      trace && trace.api_timestamp_utc ? trace.api_timestamp_utc : '--';
+    document.getElementById('traceDashboard').textContent = dashboardReceivedAt;
   }
 
   // Create one table row safely: each cell displays plain text only.
@@ -527,7 +631,7 @@
   }
 
   // Show the PIR sensor's most recent logged state and detection count.
-  function renderPir(pir) {
+  function renderPir(pir, freshness) {
     const state = document.getElementById('pirValue');
     const time = document.getElementById('pirSub');
     const count = document.getElementById('motionCount');
@@ -542,12 +646,14 @@
     } else if (latest.event === 'MOTION_DETECTED') {
       state.textContent = 'MOTION DETECTED';
       state.classList.add('detected'); // Highlight latest detection in orange.
-      time.textContent = `Last event: ${latest.timestamp}`;
+      time.textContent =
+        `Last event: ${latest.timestamp} · ${describeFreshness(freshness)}`;
     } else {
       // MOTION_STOPPED is the PIR sensor's last logged state, not a guarantee
       // that the reader is still running or that no one is moving right now.
       state.textContent = 'MOTION STOPPED';
-      time.textContent = `Last event: ${latest.timestamp}`;
+      time.textContent =
+        `Last event: ${latest.timestamp} · ${describeFreshness(freshness)}`;
     }
 
     // Total detection count counts MOTION_DETECTED entries only.
@@ -585,20 +691,28 @@
       // One GET returns DHT22 readings plus a separate "pir" object.
       // Disabling browser caching helps ensure newly appended CSV rows appear.
       const response = await fetch('/api/data', { cache: 'no-store' });
+      document.getElementById('traceHttpStatus').textContent =
+        `HTTP ${response.status}`;
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
+      const dashboardReceivedAt = new Date().toISOString();
 
       // The original API keys (latest/readings) are unchanged.
-      renderLatest(data.latest);
+      renderLatest(data.latest, data.freshness && data.freshness.dht_sample);
       renderTable(data.readings);
       renderChart(data.readings);
+      renderTrial(data.trial, data.trace, dashboardReceivedAt);
 
       // The new API key (pir) contains motion state, counts, and event history.
-      renderPir(data.pir);
+      renderPir(
+        data.pir,
+        data.freshness && data.freshness.pir_event
+      );
       renderPirTable(data.pir ? data.pir.events : []);
     } catch (err) {
       // A network/server problem prevents fresh data from reaching this page.
-      setStatus(false);
+      setStatus({ status: 'unavailable' });
+      document.getElementById('traceHttpStatus').textContent = 'Request failed';
       console.error('Failed to fetch data from /api/data:', err);
     }
   }

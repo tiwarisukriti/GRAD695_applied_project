@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Basic browser metadata: UTF-8 permits readable text and viewport enables mobile layout. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Title updated to mention both physical sensors shown on the same page. -->
+<title>SENSOR MONITOR - DHT22 + PIR</title>
+<!-- Existing Chart.js CDN: the DHT22 graph uses it, but PIR tables do not. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- CSS keeps the original dashboard styling and adds only PIR-specific rules. -->
+<style>
+  /* Centralize colors and fonts so both sensor sections use the same theme. */
+  :root {
+    --bg: #FFFFFF;
+    --panel: #F7F7F7;
+    --panel-border: #DDDDDD;
+    --text: #111111;
+    --text-muted: #555555;
+    --heading: #D32F2F;
+    --accent-live: #2E9E90;
+    --accent-warn: #C97A2B;
+    --grid-line: #E5E5E5;
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  /* Include padding and borders in each element’s computed width. */
+  * { box-sizing: border-box; }
+
+  /* Style the white page background, default typography, and page spacing. */
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  /* Keep all cards, charts, and tables within the same maximum width. */
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  /* Lay out the dashboard title and data-availability indicator. */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+
+  /* Use red uppercase mono lettering as in the existing design. */
+  .title {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--heading);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* Keep the emphasized part of the title red. */
+  .title strong {
+    color: var(--heading);
+  }
+
+  /* Align the status dot with the header status text. */
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* Display a pulsing teal dot when DHT22 data is available. */
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-live);
+    box-shadow: 0 0 0 0 rgba(46, 158, 144, 0.5);
+    animation: pulse 2s infinite;
+  }
+
+  /* Show a static warning-colored dot for missing, stale, or invalid data. */
+  .dot.stale {
+    background: var(--accent-warn);
+    box-shadow: none;
+    animation: none;
+  }
+
+  /* Animate the expanding translucent ring around the teal dot. */
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(46, 158, 144, 0.4); }
+    70%  { box-shadow: 0 0 0 8px rgba(46, 158, 144, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 158, 144, 0); }
+  }
+
+  /* Arrange pairs of information cards into two columns. */
+  .readouts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Use three balanced columns for run identity, reliability, and trace time. */
+  .trial-readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Stack sensor cards vertically on narrow/mobile screens. */
+  @media (max-width: 560px) {
+    .readouts,
+    .trial-readouts { grid-template-columns: 1fr; }
+  }
+
+  /* Style the shared cards for measurements and PIR event statistics. */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 20px 22px;
+  }
+
+  /* Style the small red uppercase label at the top of each card. */
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--heading);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  /* Make the primary numeric measurement prominent. */
+  .panel-value {
+    font-family: var(--font-mono);
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  /* Keep C and % smaller than the measurement itself. */
+  .panel-value .unit {
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  /* Style secondary information such as timestamps or Fahrenheit. */
+  .panel-sub {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  /* Give the existing DHT22 chart a fixed-height bordered panel. */
+  .chart-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+    height: 320px;
+  }
+
+  /* Frame each history table in a bordered panel. */
+  .table-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  /* Allow long sensor histories to scroll vertically. */
+  .table-scroll {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  /* Use a compact monospaced font for logged CSV data. */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  /* Keep column headings visible when scrolling through a table. */
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    text-align: left;
+    padding: 12px 22px;
+    color: var(--heading);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  /* Add comfortable cell spacing and thin row separators. */
+  tbody td {
+    padding: 9px 22px;
+    border-bottom: 1px solid var(--grid-line);
+    color: var(--text);
+  }
+
+  /* Highlight the newest row of each sensor history. */
+  tbody tr:first-child td {
+    color: var(--accent-live);
+  }
+
+  /* Display an empty state when the configured CSV source has no sensor rows. */
+  .empty-state {
+    padding: 40px 22px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-align: center;
+  }
+
+
+  /* Section headings distinguish SENSOR-01 (DHT22) from SENSOR-02 (PIR). */
+  .section-heading {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    color: var(--heading);
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+
+  /* Separate the new PIR section from the DHT22 table above it. */
+  .pir-section { margin-top: 34px; }
+
+  /* Keep the trial measurements visually separate from sensor readings. */
+  .trial-section { margin-bottom: 30px; }
+
+  /* Let long UUIDs and synchronized timestamps wrap on small screens. */
+  .trace-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+
+  /* Motion status uses smaller lettering to fit words inside the card. */
+  .pir-value { font-size: clamp(20px, 3vw, 27px); line-height: 1.3; }
+
+  /* Highlight a currently last-recorded MOTION_DETECTED event in orange. */
+  .pir-value.detected { color: var(--accent-warn); }
+
+  /* Give historical MOTION_DETECTED table entries a visual distinction. */
+  .pir-detected td:last-child { color: var(--accent-warn); }
+</style>
+</head>
+<body>
+  <!-- Center the whole dashboard using the same width as the original design. -->
+  <div class="wrap">
+    <!-- Top header identifies the dashboard and the availability of DHT22 data. -->
+    <header>
+      <div class="title"><strong>SENSOR MONITOR</strong> - DHT22 / PIR</div>
+      <div class="status">
+        <!-- JavaScript toggles the dot's color and the text after each poll. -->
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">CONNECTING...</span>
+      </div>
+    </header>
+
+    <!-- Show the run ID, attempt-based reliability, and logger/API/browser times. -->
+    <section class="trial-section" aria-labelledby="trialHeading">
+      <h2 class="section-heading" id="trialHeading">INSTRUMENTED TRIAL TRACE</h2>
+      <div class="readouts trial-readouts">
+        <div class="panel">
+          <div class="panel-label">Trial status / run ID</div>
+          <div class="panel-value pir-value" id="trialStatus">NO TRIAL</div>
+          <div class="panel-sub trace-value" id="trialRunId">No instrumented run loaded</div>
+          <div class="panel-sub trace-value" id="trialTiming">No trial timing data</div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">DHT22 acquisition reliability</div>
+          <div class="panel-value"><span id="reliabilityValue">--</span><span class="unit">%</span></div>
+          <div class="panel-sub" id="attemptCount">No acquisition attempts recorded</div>
+        </div>
+        <div class="panel">
+          <div class="panel-label">Logger / API / browser (UTC)</div>
+          <div class="panel-sub trace-value">Logger: <span id="traceLogger">--</span></div>
+          <div class="panel-sub trace-value">API: <span id="traceApi">--</span></div>
+          <div class="panel-sub trace-value">Browser: <span id="traceDashboard">--</span></div>
+          <div class="panel-sub trace-value">API response: <span id="traceHttpStatus">--</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SENSOR 01: DHT22. All existing temperature/humidity cards are kept. -->
+    <section aria-labelledby="dhtHeading">
+      <h2 class="section-heading" id="dhtHeading">SENSOR-01 - DHT22 TEMP/HUMIDITY</h2>
+      <div class="readouts">
+        <!-- Show Celsius/Fahrenheit from DHT22 rows in either CSV logging mode. -->
+        <div class="panel">
+          <div class="panel-label">Temperature</div>
+          <div class="panel-value"><span id="tempValue">--</span><span class="unit">C</span></div>
+          <div class="panel-sub" id="tempSub">-- F</div>
+        </div>
+        <!-- The humidity card shows relative humidity and sample timestamp. -->
+        <div class="panel">
+          <div class="panel-label">Humidity</div>
+          <div class="panel-value"><span id="humValue">--</span><span class="unit">%</span></div>
+          <div class="panel-sub" id="humSub">relative humidity</div>
+        </div>
+      </div>
+
+      <!-- The original Chart.js graph still plots Celsius and humidity over time. -->
+      <div class="chart-panel">
+        <canvas id="chart" aria-label="Temperature and humidity history"></canvas>
+      </div>
+
+      <!-- The DHT22 table lists logged measurements, newest row first. -->
+      <div class="table-panel">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Temp (C)</th>
+                <th>Temp (F)</th>
+                <th>Humidity (%)</th>
+              </tr>
+            </thead>
+            <!-- JavaScript inserts table rows here from the JSON response. -->
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SENSOR 02: PIR. Events can come from pir_log.csv or sensor_log.csv. -->
+    <section class="pir-section" aria-labelledby="pirHeading">
+      <h2 class="section-heading" id="pirHeading">SENSOR-02 - PIR MOTION</h2>
+      <div class="readouts">
+        <!-- PIR writes events, not a continuous numeric motion measurement. -->
+        <!-- The event most recently logged is the *last known* motion state. -->
+        <div class="panel">
+          <div class="panel-label">Last recorded motion state</div>
+          <div class="panel-value pir-value" id="pirValue">NO DATA</div>
+          <div class="panel-sub" id="pirSub">Waiting for motion events...</div>
+        </div>
+        <!-- Count MOTION_DETECTED rows, not MOTION_STOPPED rows. -->
+        <div class="panel">
+          <div class="panel-label">Motion detections logged</div>
+          <div class="panel-value" id="motionCount">0</div>
+          <div class="panel-sub" id="motionCountSub">0 total PIR events</div>
+        </div>
+      </div>
+
+      <!-- Show the timestamp and event type for recent PIR detections/stops. -->
+      <div class="table-panel">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Motion event</th>
+              </tr>
+            </thead>
+            <!-- JavaScript inserts PIR rows here, most recent first. -->
+            <tbody id="pirTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+  // HOW THIS PAGE GETS ITS DATA:
+  // 1. The selected Python logger writes either separate CSVs or one combined CSV.
+  // 2. Flask reads BOTH files and returns one object from /api/data.
+  // 3. poll() fetches that JSON and updates the DHT22 and PIR sections.
+  // The browser never reads Raspberry Pi GPIO pins directly.
+
+  // Keep the original 5-second refresh interval; the page does not reload.
+  const POLL_INTERVAL_MS = 5000;
+
+  // The chart object is set up once, then its data arrays are refreshed.
+  let chart = null;
+
+  // Build the original line chart with separate y-axes for temperature/humidity.
+  function initChart() {
+    // If the externally hosted Chart.js script is blocked, the numeric cards,
+    // PIR section, and tables can still work without a chart.
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js could not load. The tables and readouts will still update.');
+      chart = null;
+      return;
+    }
+
+    try {
+      // Get the drawing surface declared by <canvas id="chart">.
+      const ctx = document.getElementById('chart').getContext('2d');
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          // x-axis labels and y-axis readings are populated by renderChart().
+          labels: [],
+          datasets: [
+            {
+              // Teal line: Celsius is measured using the left-hand y-axis.
+              label: 'Temp (C)',
+              data: [],
+              borderColor: '#2E9E90',
+              backgroundColor: 'rgba(46, 158, 144, 0.08)',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 0,
+              yAxisID: 'y'
+            },
+            {
+              // Orange line: relative humidity uses the right-hand y-axis.
+              label: 'Humidity (%)',
+              data: [],
+              borderColor: '#C97A2B',
+              backgroundColor: 'rgba(201, 122, 43, 0.08)',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 0,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          // Size the chart to its panel and redraw without animated motion.
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            // Keep the small, muted legend from the original dashboard.
+            legend: {
+              labels: { color: '#555555', font: { family: 'ui-monospace', size: 11 } }
+            }
+          },
+          scales: {
+            x: {
+              // Display a limited number of timestamps to avoid crowding.
+              ticks: { color: '#555555', maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
+              grid: { color: '#E5E5E5' }
+            },
+            y: {
+              // Celsius scale on the left (teal).
+              position: 'left',
+              ticks: { color: '#2E9E90' },
+              grid: { color: '#E5E5E5' }
+            },
+            y1: {
+              // Humidity scale on the right (orange), without duplicate grid.
+              position: 'right',
+              ticks: { color: '#C97A2B' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      // If chart initialization fails, do not block the other data panels.
+      console.error('Chart initialization failed:', err);
+      chart = null;
+    }
+  }
+
+  // Mark old CSV values as historical instead of presenting them as live data.
+  function setStatus(freshness) {
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    const status = freshness ? freshness.status : 'unknown';
+    const age = freshness && Number.isFinite(freshness.age_seconds)
+      ? `${freshness.age_seconds.toFixed(1)}s`
+      : '';
+
+    if (status === 'fresh') {
+      dot.classList.remove('stale');
+      text.textContent = 'LIVE';
+    } else if (status === 'stale') {
+      dot.classList.add('stale');
+      text.textContent = `STALE DHT22 DATA${age ? ` (${age})` : ''}`;
+    } else if (status === 'clock_ahead') {
+      dot.classList.add('stale');
+      text.textContent = 'CHECK DEVICE CLOCK';
+    } else if (status === 'invalid') {
+      dot.classList.add('stale');
+      text.textContent = 'INVALID SENSOR TIMESTAMP';
+    } else if (status === 'unavailable') {
+      dot.classList.add('stale');
+      text.textContent = 'API UNAVAILABLE';
+    } else {
+      dot.classList.add('stale');
+      text.textContent = 'NO DHT22 DATA';
+    }
+  }
+
+  // Describe sample age using the API's Pi-side freshness calculation.
+  function describeFreshness(freshness) {
+    if (!freshness || freshness.status === 'unknown') return 'age unknown';
+    if (freshness.status === 'invalid') return 'timestamp invalid';
+    if (freshness.status === 'clock_ahead') return 'device clock is ahead';
+    return `${freshness.status}; ${freshness.age_seconds.toFixed(1)}s old`;
+  }
+
+  // Update DHT22 values without implying an old CSV row is a current sample.
+  function renderLatest(latest, freshness) {
+    if (!latest) {
+      // Show placeholders when the selected CSV has no valid DHT22 rows.
+      setStatus(freshness);
+      document.getElementById('tempValue').textContent = '--';
+      document.getElementById('tempSub').textContent = '-- F';
+      document.getElementById('humValue').textContent = '--';
+      document.getElementById('humSub').textContent = 'No DHT22 data yet';
+      return;
+    }
+
+    setStatus(freshness);
+    // textContent shows CSV values as text, not as executable HTML.
+    document.getElementById('tempValue').textContent = latest.temperature_c;
+    document.getElementById('tempSub').textContent = `${latest.temperature_f}F`;
+    document.getElementById('humValue').textContent = latest.humidity_pct;
+    document.getElementById('humSub').textContent =
+      `as of ${latest.timestamp} · ${describeFreshness(freshness)}`;
+  }
+
+  // Display the latest run's denominator and its matching logger/API/browser times.
+  function renderTrial(trial, trace, dashboardReceivedAt) {
+    const status = document.getElementById('trialStatus');
+    const runId = document.getElementById('trialRunId');
+    const reliability = document.getElementById('reliabilityValue');
+    const attempts = document.getElementById('attemptCount');
+    const timing = document.getElementById('trialTiming');
+
+    if (!trial) {
+      status.textContent = 'NO TRIAL';
+      runId.textContent = 'No instrumented run loaded';
+      reliability.textContent = '--';
+      attempts.textContent = 'No acquisition attempts recorded';
+      timing.textContent = 'No trial timing data';
+    } else {
+      status.textContent = String(trial.status || 'UNKNOWN').toUpperCase();
+      runId.textContent = trial.run_id || 'Run ID unavailable';
+      reliability.textContent = trial.reliability_pct === null
+        ? '--'
+        : Number(trial.reliability_pct).toFixed(2);
+      attempts.textContent =
+        `${trial.successes} valid / ${trial.attempts} attempts; ` +
+        `${trial.failures} failed`;
+      const elapsed = trial.elapsed_seconds === null
+        ? '--'
+        : Number(trial.elapsed_seconds).toFixed(1);
+      timing.textContent =
+        `Elapsed ${elapsed} / ${trial.duration_seconds ?? '--'} s; ` +
+        `started ${trial.started_at_utc || 'unknown'}`;
+    }
+
+    // Keep all three timestamps visible so a captured browser view can be
+    // matched against the logger CSV row and the exact API response.
+    document.getElementById('traceLogger').textContent =
+      trace && trace.logger_timestamp_utc ? trace.logger_timestamp_utc : '--';
+    document.getElementById('traceApi').textContent =
+      trace && trace.api_timestamp_utc ? trace.api_timestamp_utc : '--';
+    document.getElementById('traceDashboard').textContent = dashboardReceivedAt;
+  }
+
+  // Create one table row safely: each cell displays plain text only.
+  // We reuse this for both DHT22 and PIR to avoid repeating DOM code.
+  function makeRow(values) {
+    const row = document.createElement('tr');
+    for (const value of values) {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.appendChild(cell);
+    }
+    return row;
+  }
+
+  // Fill the existing DHT22 table, newest measurement at the top.
+  function renderTable(readings) {
+    const body = document.getElementById('tableBody');
+    if (!readings.length) {
+      // No rows is normal if the DHT22 reader has not logged anything.
+      const empty = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 4;
+      cell.className = 'empty-state';
+      cell.textContent = 'No readings logged yet';
+      empty.appendChild(cell);
+      body.replaceChildren(empty);
+      return;
+    }
+
+    // Flask returns chronological order; reverse only for table display.
+    const rows = [...readings].reverse().map(r => makeRow([
+      r.timestamp, r.temperature_c, r.temperature_f, r.humidity_pct
+    ]));
+    body.replaceChildren(...rows);
+  }
+
+  // Keep the original DHT22 graph and plot its 60 most recent samples.
+  function renderChart(readings) {
+    if (!chart) return; // Chart.js may be unavailable, but tables still work.
+
+    const recent = readings.slice(-60);
+    // The CSV timestamp uses an ISO-like format such as 2026-10-17T19:45:19.
+    // Display only its time portion on the x-axis to keep labels short.
+    chart.data.labels = recent.map(r => r.timestamp.split('T')[1] || r.timestamp);
+    chart.data.datasets[0].data = recent.map(r => parseFloat(r.temperature_c));
+    chart.data.datasets[1].data = recent.map(r => parseFloat(r.humidity_pct));
+    chart.update();
+  }
+
+  // Show the PIR sensor's most recent logged state and detection count.
+  function renderPir(pir, freshness) {
+    const state = document.getElementById('pirValue');
+    const time = document.getElementById('pirSub');
+    const count = document.getElementById('motionCount');
+    const total = document.getElementById('motionCountSub');
+    const latest = pir && pir.latest;
+
+    // No PIR events in the selected source means the state is unknown, not "no motion".
+    state.classList.remove('detected');
+    if (!latest) {
+      state.textContent = 'NO DATA';
+      time.textContent = 'No motion events logged yet';
+    } else if (latest.event === 'MOTION_DETECTED') {
+      state.textContent = 'MOTION DETECTED';
+      state.classList.add('detected'); // Highlight latest detection in orange.
+      time.textContent =
+        `Last event: ${latest.timestamp} · ${describeFreshness(freshness)}`;
+    } else {
+      // MOTION_STOPPED is the PIR sensor's last logged state, not a guarantee
+      // that the reader is still running or that no one is moving right now.
+      state.textContent = 'MOTION STOPPED';
+      time.textContent =
+        `Last event: ${latest.timestamp} · ${describeFreshness(freshness)}`;
+    }
+
+    // Total detection count counts MOTION_DETECTED entries only.
+    count.textContent = pir ? String(pir.detections) : '0';
+    total.textContent = `${pir ? pir.count : 0} total PIR events`;
+  }
+
+  // Fill the new PIR event history table with newest events first.
+  function renderPirTable(events) {
+    const body = document.getElementById('pirTableBody');
+    if (!events.length) {
+      // The file may exist but contain just its timestamp,event header.
+      const empty = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 2;
+      cell.className = 'empty-state';
+      cell.textContent = 'No PIR motion events logged yet';
+      empty.appendChild(cell);
+      body.replaceChildren(empty);
+      return;
+    }
+
+    const rows = [...events].reverse().map(event => {
+      const row = makeRow([event.timestamp, event.event]);
+      // Color detection events orange; stopped events keep normal text color.
+      if (event.event === 'MOTION_DETECTED') row.classList.add('pir-detected');
+      return row;
+    });
+    body.replaceChildren(...rows);
+  }
+
+  // Request the newest data from Flask and refresh both sensor sections.
+  async function poll() {
+    try {
+      // One GET returns DHT22 readings plus a separate "pir" object.
+      // Disabling browser caching helps ensure newly appended CSV rows appear.
+      const response = await fetch('/api/data', { cache: 'no-store' });
+      document.getElementById('traceHttpStatus').textContent =
+        `HTTP ${response.status}`;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      const dashboardReceivedAt = new Date().toISOString();
+
+      // The original API keys (latest/readings) are unchanged.
+      renderLatest(data.latest, data.freshness && data.freshness.dht_sample);
+      renderTable(data.readings);
+      renderChart(data.readings);
+      renderTrial(data.trial, data.trace, dashboardReceivedAt);
+
+      // The new API key (pir) contains motion state, counts, and event history.
+      renderPir(
+        data.pir,
+        data.freshness && data.freshness.pir_event
+      );
+      renderPirTable(data.pir ? data.pir.events : []);
+    } catch (err) {
+      // A network/server problem prevents fresh data from reaching this page.
+      setStatus({ status: 'unavailable' });
+      document.getElementById('traceHttpStatus').textContent = 'Request failed';
+      console.error('Failed to fetch data from /api/data:', err);
+    }
+  }
+
+  // Initialize the chart, fetch immediately, then repeat every five seconds.
+  initChart();
+  poll();
+  setInterval(poll, POLL_INTERVAL_MS);
+</script>
+</body>
+</html>
