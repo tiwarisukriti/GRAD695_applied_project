@@ -10,7 +10,7 @@ dashboard.
 The two implementations are maintained separately so their behavior and
 evidence can be compared:
 
-- [Security baseline](./pi_sensors/security_baseline/README.md) — intentionally
+- [Security baseline](./pi_sensors/baseline_version/README.md) — intentionally
   retains the baseline dashboard's Flask debug setting for controlled,
   authorized testing.
 - [Hardened version](./pi_sensors/hardened_version/README.md) — the dashboard
@@ -109,7 +109,7 @@ controls and results that have actually been configured and measured on the Pi.
 ```text
 pi_sensors/
   00_install.sh
-  security_baseline/
+  baseline_version/
     README.md
     combined_logger.py
     dashboard/

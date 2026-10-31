@@ -23,7 +23,7 @@ Use the Raspberry Pi, activate the shared environment, and run from this
 version directory so the output CSV is kept with this version:
 
 ```bash
-cd ~/GRAD695_applied_project/pi_sensors/security_baseline
+cd ~/GRAD695_applied_project/pi_sensors/baseline_version
 source ~/sensor-env/bin/activate
 python3 combined_logger.py --csv sensor_trial.csv --interval 2 --duration-minutes 15
 ```
@@ -44,7 +44,7 @@ polled acquisition attempts.
 In another terminal, launch the matching dashboard against that CSV:
 
 ```bash
-cd ~/GRAD695_applied_project/pi_sensors/security_baseline/dashboard
+cd ~/GRAD695_applied_project/pi_sensors/baseline_version/dashboard
 source ~/sensor-env/bin/activate
 python3 app.py --combined-csv ../sensor_trial.csv --port 5000
 ```
