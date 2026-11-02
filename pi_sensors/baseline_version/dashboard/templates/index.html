@@ -622,7 +622,7 @@
     if (!chart) return; // Chart.js may be unavailable, but tables still work.
 
     const recent = readings.slice(-60);
-    // The CSV timestamp uses an ISO-like format such as YYYY-MM-DDTHH:MM:SS.
+    // CSV timestamps use an ISO-like format such as YYYY-MM-DDTHH:MM:SS.
     // Display only its time portion on the x-axis to keep labels short.
     chart.data.labels = recent.map(r => r.timestamp.split('T')[1] || r.timestamp);
     chart.data.datasets[0].data = recent.map(r => parseFloat(r.temperature_c));
