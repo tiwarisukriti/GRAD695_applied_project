@@ -104,6 +104,17 @@ monitoring. The dashboard marks sensor rows stale after 10 seconds by default
 timestamps and is not an independent process-health monitor. Report only
 controls and results that have actually been configured and measured on the Pi.
 
+## Publishing sensor and scan evidence
+
+Evidence files committed for public sharing should be sanitized copies. The
+sensor CSVs, API snapshots, and scan outputs in this repository use synthetic
+date shifts where timestamps are present; elapsed intervals are preserved.
+The newest run ID and scan target addresses are redacted. Do not publish
+original run IDs, exact home/activity timestamps, public or private device
+addresses, credentials, private keys, or unredacted configuration files. Keep
+original evidence in a private location; clearly label sanitized timestamps
+so readers do not interpret them as wall-clock dates.
+
 ## Repository layout
 
 ```text
