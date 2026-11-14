@@ -1,0 +1,5 @@
+2026-11-13T22:32:21-05:00
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+/home/sukriti/sensor-env/bin/python3
+Python 3.13.5

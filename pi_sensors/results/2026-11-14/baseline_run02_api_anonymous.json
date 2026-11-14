@@ -1,0 +1,1617 @@
+{
+  "count": 247,
+  "freshness": {
+    "dht_attempt": {
+      "age_seconds": 0.81,
+      "stale_after_seconds": 10,
+      "status": "fresh",
+      "timestamp_utc": "2026-11-14T03:27:26.889+00:00"
+    },
+    "dht_sample": {
+      "age_seconds": 0.81,
+      "stale_after_seconds": 10,
+      "status": "fresh",
+      "timestamp_utc": "2026-11-14T03:27:26.889+00:00"
+    },
+    "pir_event": {
+      "age_seconds": 14.6,
+      "stale_after_seconds": 10,
+      "status": "stale",
+      "timestamp_utc": "2026-11-14T03:27:13.096+00:00"
+    }
+  },
+  "latest": {
+    "humidity_pct": "35.2",
+    "temperature_c": "23.3",
+    "temperature_f": "73.9",
+    "timestamp": "2026-11-14T03:27:26.889+00:00"
+  },
+  "pir": {
+    "count": 18,
+    "detections": 9,
+    "events": [
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:18:04.594+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:18:12.252+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:19:19.850+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:19:29.309+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:20:37.420+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:20:46.678+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:21:55.084+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:22:03.537+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:23:12.641+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:23:20.794+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:24:30.204+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:24:38.462+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:25:47.874+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:25:55.727+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:27:03.122+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:27:03.227+00:00"
+      },
+      {
+        "event": "MOTION_STOPPED",
+        "timestamp": "2026-11-14T03:27:05.444+00:00"
+      },
+      {
+        "event": "MOTION_DETECTED",
+        "timestamp": "2026-11-14T03:27:13.096+00:00"
+      }
+    ],
+    "latest": {
+      "event": "MOTION_DETECTED",
+      "timestamp": "2026-11-14T03:27:13.096+00:00"
+    }
+  },
+  "readings": [
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:17:48.441+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:17:50.792+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:17:53.143+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:17:55.495+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:17:57.846+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:00.198+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:02.549+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:04.901+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:07.252+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:09.603+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:11.955+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:14.306+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:16.658+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:19.009+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:21.360+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:23.712+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:26.063+00:00"
+    },
+    {
+      "humidity_pct": "34.8",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:28.415+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:30.766+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:33.118+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:35.469+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:37.820+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:40.172+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:42.523+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:44.875+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:47.226+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:49.577+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:51.929+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:54.280+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:56.632+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:18:58.983+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:01.335+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:03.686+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:06.037+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:08.389+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:10.740+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:13.092+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:15.443+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:19:17.794+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:20.146+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:22.497+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:24.849+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:27.200+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:29.551+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:31.903+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:34.254+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:36.606+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:38.957+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:41.308+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:43.660+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:19:46.011+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:48.363+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:50.714+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:53.066+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:19:55.417+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:19:57.768+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:00.120+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:02.471+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:04.823+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:07.174+00:00"
+    },
+    {
+      "humidity_pct": "35.7",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:20:09.525+00:00"
+    },
+    {
+      "humidity_pct": "35.6",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:11.877+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:14.228+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:16.580+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:18.931+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:21.283+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:23.634+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:25.985+00:00"
+    },
+    {
+      "humidity_pct": "35.6",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:28.337+00:00"
+    },
+    {
+      "humidity_pct": "35.6",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:30.688+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:33.040+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:35.391+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:37.742+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:40.094+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:42.445+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:44.797+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:47.148+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:49.500+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:51.851+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:54.202+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:56.554+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:20:58.905+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:01.257+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:03.608+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:05.960+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:08.311+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:10.662+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:13.014+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:15.365+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:17.717+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:20.068+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:22.420+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:24.771+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:27.122+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:29.474+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:31.825+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:34.177+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:36.528+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:38.879+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:21:41.231+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:43.582+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:45.934+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:48.285+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:50.636+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:52.988+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:55.339+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:21:57.691+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:00.042+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:02.393+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:04.745+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:07.096+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:09.448+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:11.799+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:14.151+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:16.502+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:18.853+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:21.205+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:23.556+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:25.908+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:28.259+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:30.610+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:32.962+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:35.313+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:37.665+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:40.016+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:42.367+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:44.719+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:47.070+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:49.422+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:51.773+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:54.125+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:56.476+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:22:58.827+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:01.179+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:03.530+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:05.882+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:08.233+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:10.585+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:12.936+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:15.287+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:17.639+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:19.990+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:22.342+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:24.693+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:27.045+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:29.396+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:31.747+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:34.099+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:36.450+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:38.802+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:41.153+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:43.505+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:45.856+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:48.207+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:50.559+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:52.910+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:55.262+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:57.613+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:23:59.965+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:02.316+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:04.668+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:07.019+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:09.370+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:11.722+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:14.073+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:16.425+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:18.776+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:21.127+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:23.479+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:25.830+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:28.182+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:30.533+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:32.884+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:35.236+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:37.587+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:39.939+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:42.290+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:44.641+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:46.993+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:49.344+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:51.696+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:54.047+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:56.399+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:24:58.750+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:01.101+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:03.453+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:05.804+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:08.156+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:10.507+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:12.858+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:15.210+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:17.561+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:19.913+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:25:22.264+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:24.615+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:26.967+00:00"
+    },
+    {
+      "humidity_pct": "35.6",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:29.318+00:00"
+    },
+    {
+      "humidity_pct": "35.6",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:31.670+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:34.021+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:36.373+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:38.724+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:41.075+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:43.427+00:00"
+    },
+    {
+      "humidity_pct": "35.4",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:45.778+00:00"
+    },
+    {
+      "humidity_pct": "35.5",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:48.130+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:50.481+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:25:52.832+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:55.184+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:57.535+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:25:59.887+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:02.238+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:04.590+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:06.941+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:09.292+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:11.644+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:13.995+00:00"
+    },
+    {
+      "humidity_pct": "34.9",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:16.347+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:18.698+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:21.049+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:23.401+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:25.752+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:28.104+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:30.455+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:32.806+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:35.158+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:37.509+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:39.861+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:42.212+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:44.564+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:46.915+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:49.266+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:51.618+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:26:53.969+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:56.321+00:00"
+    },
+    {
+      "humidity_pct": "35.3",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:26:58.672+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:01.023+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:03.375+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:05.726+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:08.078+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:10.429+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:27:12.780+00:00"
+    },
+    {
+      "humidity_pct": "35.1",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:27:15.132+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:17.483+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.2",
+      "temperature_f": "73.8",
+      "timestamp": "2026-11-14T03:27:19.835+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:22.186+00:00"
+    },
+    {
+      "humidity_pct": "35.0",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:24.538+00:00"
+    },
+    {
+      "humidity_pct": "35.2",
+      "temperature_c": "23.3",
+      "temperature_f": "73.9",
+      "timestamp": "2026-11-14T03:27:26.889+00:00"
+    }
+  ],
+  "trace": {
+    "api_timestamp_utc": "2026-11-14T03:27:27.695+00:00",
+    "logger_timestamp_utc": "2026-11-14T03:27:26.889+00:00",
+    "run_id": "ccd4b438-493c-4520-a1ae-0b79d1896ec1"
+  },
+  "trial": {
+    "attempts": 247,
+    "duration_seconds": 900,
+    "elapsed_seconds": 578.8,
+    "ended_at_utc": null,
+    "failures": 0,
+    "latest_attempt": {
+      "outcome": "success",
+      "timestamp_utc": "2026-11-14T03:27:26.889+00:00"
+    },
+    "logger_timestamp_utc": "2026-11-14T03:27:26.889+00:00",
+    "reliability_pct": 100.0,
+    "run_id": "ccd4b438-493c-4520-a1ae-0b79d1896ec1",
+    "started_at_utc": "2026-11-14T03:17:48.089+00:00",
+    "status": "running",
+    "successes": 247
+  }
+}

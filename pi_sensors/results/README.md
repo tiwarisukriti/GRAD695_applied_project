@@ -37,4 +37,5 @@ dashboard command must point to the date folder containing that trial.
 | `2025-12-25` | Baseline combined sensor readings |
 | `2026-01-01` | Baseline combined sensor readings and WSL IoT security evidence |
 | `2026-10-25` | Raspberry Pi security-baseline evidence |
+| `2026-11-14` | Baseline trial 2/run 02 API evidence, HTTP check, Pi listeners, and Pi environment |
 | `undated` | Empty historical sensor log |
