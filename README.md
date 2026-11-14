@@ -64,6 +64,12 @@ attempt-based reliability is:
 100 × complete valid DHT22 acquisitions / all DHT22 acquisition attempts
 ```
 
+Sensor and security evidence is collected in [`pi_sensors/results/`](./pi_sensors/results/),
+organized into folders by UTC date. New sensor logs go to the matching date
+folder automatically; baseline and hardened filenames stay distinct. Existing
+timestamped evidence has been filed by its recorded date. Dates in the
+published evidence may be synthetic shifts, as explained below.
+
 PIR is event-driven. Its motion transitions are logged and counted as events;
 they are not treated as periodic read attempts. Trial records include a UUID
 run ID, UTC timestamps with millisecond precision, monotonic elapsed seconds,
@@ -120,6 +126,12 @@ so readers do not interpret them as wall-clock dates.
 ```text
 pi_sensors/
   00_install.sh
+  results/
+    README.md
+    YYYY-MM-DD/
+      baseline_*.csv
+      hardened_*.csv
+      security evidence...
   baseline_version/
     README.md
     combined_logger.py

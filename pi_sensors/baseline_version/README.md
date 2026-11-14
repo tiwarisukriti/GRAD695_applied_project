@@ -14,24 +14,26 @@ For shared hardware setup and evidence context, see the [project README](../../R
 - `dht22_reader.py` / `pir_reader.py` — standalone legacy collectors.
 - `dashboard/app.py` — Flask API and dashboard server.
 - `dashboard/templates/index.html` — browser dashboard.
-- `combined_data*.csv`, `dht_log.csv`, `pir_log.csv`, and `sensor_log.csv` —
-  historical evidence; do not treat them as output from a new trial.
+- Historical sensor and security evidence is organized by recorded UTC date
+  under the [results archive](../results/README.md).
 
 ## Run a 15-minute instrumented trial
 
 Use the Raspberry Pi, activate the shared environment, and run from this
-version directory so the output CSV is kept with this version:
+version directory:
 
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/baseline_version
 source ~/sensor-env/bin/activate
-python3 combined_logger.py --csv sensor_trial.csv --interval 2 --duration-minutes 15
+python3 combined_logger.py --interval 2 --duration-minutes 15
 ```
 
 The logger defaults to these settings if `--interval` and `--duration-minutes`
-are omitted. It creates or appends to `sensor_trial.csv`; select a new filename
-if you need a separate evidence artifact. It refuses to append the instrumented
-schema to a nonmatching existing CSV.
+are omitted. By default, it creates or appends to
+`../results/<UTC-date>/baseline_sensor_trial.csv`. Use `--csv` to choose another
+path. It refuses to append the instrumented schema to a nonmatching existing
+CSV. Runs on the same UTC date share the file and remain distinguishable by
+their run IDs.
 
 The CSV records `TRIAL_START`, every `DHT22_ATTEMPT`, each `PIR_EVENT`, and
 `TRIAL_END`. DHT22 attempts have `success`, `error`, or `no_data` outcomes.
@@ -46,7 +48,8 @@ In another terminal, launch the matching dashboard against that CSV:
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/baseline_version/dashboard
 source ~/sensor-env/bin/activate
-python3 app.py --combined-csv ../sensor_trial.csv --port 5000
+RESULTS_DIR="../../results/$(date -u +%F)"
+python3 app.py --combined-csv "$RESULTS_DIR/baseline_sensor_trial.csv" --port 5000
 ```
 
 Open `http://<pi-ip-address>:5000` from the authorized local network.
@@ -68,12 +71,17 @@ across the CSV, API, and browser.
 
 For each trial, preserve:
 
-1. The unedited `sensor_trial.csv`.
+1. The unedited `baseline_sensor_trial.csv` in that trial's dated results
+   folder.
 2. The `/api/data` JSON response, including `trial.run_id` and `trace`.
 3. A browser capture showing that same run ID and the logger/API/browser
    timestamps.
 4. The Git revision, run date/time, hardware/configuration notes, and whether
    the run ended as `completed`, `interrupted`, or `failed`.
+
+Save the API response, browser capture, and notes in that same date folder,
+using filenames that start with `baseline_`. If connecting to a past trial,
+set `RESULTS_DIR` to that trial's UTC date folder rather than today's date.
 
 The logger and API timestamps use UTC. The dashboard records the browser's
 UTC receipt time. Confirm the run ID matches before comparing these records.

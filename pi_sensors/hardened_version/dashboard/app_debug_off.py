@@ -27,10 +27,12 @@ HARDENED-VARIANT DEVELOPMENT SETTINGS:
 
 Examples (run from ~/pi_sensors/hardened_version/dashboard/):
     # Separate logs:
-    python3 app_debug_off.py --csv ../dht_log.csv --pir-csv ../pir_log.csv --port 5001
+    RESULTS_DIR="../../results/$(date -u +%F)"
+    python3 app_debug_off.py --csv "$RESULTS_DIR/hardened_dht_log.csv" \
+        --pir-csv "$RESULTS_DIR/hardened_pir_log.csv" --port 5001
 
     # Instrumented 15-minute trial output:
-    python3 app_debug_off.py --combined-csv ../sensor_trial.csv --port 5001
+    python3 app_debug_off.py --combined-csv "$RESULTS_DIR/hardened_sensor_trial.csv" --port 5001
 """
 
 # argparse reads optional file paths and HTTP port from the command line.
@@ -42,6 +44,7 @@ import hmac
 import ipaddress
 import os
 from datetime import datetime, timezone
+from pathlib import Path
 
 # Flask serves the HTML page and converts Python dictionaries into JSON.
 from flask import Flask, Response, jsonify, render_template, request
@@ -50,10 +53,15 @@ from flask import Flask, Response, jsonify, render_template, request
 # Create the web application; templates/index.html is loaded by Flask.
 app = Flask(__name__)
 
-# Defaults are resolved relative to the working directory used to launch
-# app.py. The examples above explicitly point to the parent directory.
-CSV_PATH = "dht_log.csv"
-PIR_CSV_PATH = "pir_log.csv"
+# Standalone logger defaults use the same dated files as dht22_reader.py and
+# pir_reader.py.
+RESULTS_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "results"
+    / datetime.now(timezone.utc).date().isoformat()
+)
+CSV_PATH = str(RESULTS_DIR / "hardened_dht_log.csv")
+PIR_CSV_PATH = str(RESULTS_DIR / "hardened_pir_log.csv")
 
 # None selects the separate-files mode. A path selects combined-files mode.
 COMBINED_CSV_PATH = None
@@ -480,12 +488,12 @@ if __name__ == "__main__":
 
     # These two options are for independent sensor logger scripts.
     parser.add_argument(
-        "--csv", type=str, default="dht_log.csv",
-        help="Separate-mode DHT22 file (default: dht_log.csv)",
+        "--csv", type=str, default=CSV_PATH,
+        help="Separate-mode DHT22 file (default: today's dated hardened log)",
     )
     parser.add_argument(
-        "--pir-csv", type=str, default="pir_log.csv",
-        help="Separate-mode PIR file (default: pir_log.csv)",
+        "--pir-csv", type=str, default=PIR_CSV_PATH,
+        help="Separate-mode PIR file (default: today's dated hardened log)",
     )
 
     # This option switches to the combined_logger.py file instead; the

@@ -11,7 +11,8 @@ import argparse
 import csv
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 
 import board
 import adafruit_dht
@@ -19,6 +20,13 @@ import adafruit_dht
 # --- Config ---
 DHT_PIN = board.D17  # GPIO17 (physical pin 11)
 READ_INTERVAL_SECONDS = 2
+
+
+def default_csv_path() -> str:
+    date_folder = datetime.now(timezone.utc).date().isoformat()
+    results_dir = Path(__file__).resolve().parents[1] / "results" / date_folder
+    results_dir.mkdir(parents=True, exist_ok=True)
+    return str(results_dir / "hardened_dht_log.csv")
 
 
 def read_loop(csv_path: str | None):
@@ -74,6 +82,11 @@ def read_loop(csv_path: str | None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read DHT22 temperature/humidity sensor")
-    parser.add_argument("--csv", type=str, default=None, help="Path to CSV file to log readings")
+    parser.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Path to CSV file (default: date-wise results/hardened_dht_log.csv)",
+    )
     args = parser.parse_args()
-    read_loop(args.csv)
+    read_loop(args.csv or default_csv_path())

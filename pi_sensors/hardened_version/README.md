@@ -9,6 +9,8 @@ WSGI deployment; it does not configure firewall rules, SSH protections, or
 intrusion monitoring. Verify those controls separately on the Raspberry Pi.
 
 For shared hardware setup and evidence context, see the [project README](../../README.md).
+The date-wise sensor and security evidence archive is documented in
+[`../results/README.md`](../results/README.md).
 
 ## Components
 
@@ -21,18 +23,19 @@ For shared hardware setup and evidence context, see the [project README](../../R
 ## Run a 15-minute instrumented trial
 
 Run on the Raspberry Pi, activate the shared environment, and start from this
-version directory so its trial CSV remains separate from the baseline:
+version directory:
 
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/hardened_version
 source ~/sensor-env/bin/activate
-python3 combined_logger.py --csv sensor_trial.csv --interval 2 --duration-minutes 15
+python3 combined_logger.py --interval 2 --duration-minutes 15
 ```
 
 The defaults are a two-second DHT22 interval and a 15-minute trial. The logger
-creates or appends to `sensor_trial.csv`; choose a new filename to preserve a
-separate run artifact. It refuses to append the instrumented schema to a
-nonmatching existing CSV.
+creates or appends to `../results/<UTC-date>/hardened_sensor_trial.csv`. Use
+`--csv` to choose another path. Runs on the same UTC date share the file and
+remain distinguishable by their run IDs. It refuses to append the instrumented
+schema to a nonmatching existing CSV.
 
 The CSV contains explicit trial start/end rows, every DHT22 attempt, and
 asynchronous PIR motion events. Each row has a UUID run ID, UTC timestamp with
@@ -47,12 +50,13 @@ In another terminal, launch the matching dashboard:
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/hardened_version/dashboard
 source ~/sensor-env/bin/activate
+RESULTS_DIR="../../results/$(date -u +%F)"
 read -r -p "Dashboard username: " DASHBOARD_USERNAME
 export DASHBOARD_USERNAME
 read -r -s -p "Dashboard password: " DASHBOARD_PASSWORD
 echo
 export DASHBOARD_PASSWORD
-python3 app_debug_off.py --combined-csv ../sensor_trial.csv
+python3 app_debug_off.py --combined-csv "$RESULTS_DIR/hardened_sensor_trial.csv"
 ```
 
 Choose a unique dashboard password of at least 12 characters. The application
@@ -68,7 +72,7 @@ python3 app_debug_off.py \
   --host 0.0.0.0 --port 5001 \
   --tls-cert /path/to/pi-dashboard.crt \
   --tls-key /path/to/pi-dashboard.key \
-  --combined-csv ../sensor_trial.csv
+  --combined-csv "$RESULTS_DIR/hardened_sensor_trial.csv"
 ```
 
 The app refuses remote binds without both TLS files, and returns an error if
@@ -88,13 +92,15 @@ running. Always review CSV and API freshness together.
 
 ## Capture comparable evidence
 
-For this run, retain the original `sensor_trial.csv`, a saved `/api/data`
-response, and a dashboard capture with the matching run ID. Also record the
-Git revision, run date/time, hardware/configuration notes, and final trial
-status. Check that the run ID matches across all artifacts before calculating
-or reporting results. The 15-minute ≥95% reliability criterion requires an
-actual completed hardware run; source code or historical successful rows alone
-do not establish that it passed.
+For this run, retain the original `hardened_sensor_trial.csv`, a saved
+`/api/data` response, and a dashboard capture with the matching run ID in the
+same dated results folder. Name additional evidence with the `hardened_` prefix.
+Also record the Git revision, run date/time, hardware/configuration notes, and
+final trial status. When reviewing an older trial, set `RESULTS_DIR` to its UTC
+date folder. Check that the run ID matches across all artifacts before
+calculating or reporting results. The 15-minute ≥95% reliability criterion
+requires an actual completed hardware run; source code or historical
+successful rows alone do not establish that it passed.
 
 ## Hardening and evidence boundary
 

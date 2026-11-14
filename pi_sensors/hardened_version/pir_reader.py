@@ -10,13 +10,21 @@ Usage:
 import argparse
 import csv
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 from signal import pause
 
 from gpiozero import MotionSensor
 
 # --- Config ---
 PIR_PIN = 18  # GPIO18 (physical pin 12)
+
+
+def default_csv_path() -> str:
+    date_folder = datetime.now(timezone.utc).date().isoformat()
+    results_dir = Path(__file__).resolve().parents[1] / "results" / date_folder
+    results_dir.mkdir(parents=True, exist_ok=True)
+    return str(results_dir / "hardened_pir_log.csv")
 
 
 def build_logger(csv_path: str | None):
@@ -59,6 +67,11 @@ def main(csv_path: str | None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read PIR motion sensor")
-    parser.add_argument("--csv", type=str, default=None, help="Path to CSV file to log events")
+    parser.add_argument(
+        "--csv",
+        type=str,
+        default=None,
+        help="Path to CSV file (default: date-wise results/hardened_pir_log.csv)",
+    )
     args = parser.parse_args()
-    main(args.csv)
+    main(args.csv or default_csv_path())

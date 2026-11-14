@@ -8,7 +8,7 @@ PIR records represent motion-state transitions because gpiozero reports PIR
 events asynchronously rather than exposing a comparable polling denominator.
 
 Example 15-minute run:
-    python3 combined_logger.py --csv sensor_trial.csv --interval 2 --duration-minutes 15
+    python3 combined_logger.py --interval 2 --duration-minutes 15
 
 The CSV uses UTC wall-clock timestamps for cross-process correlation and
 monotonic elapsed seconds for measurements within the run. The same run ID
@@ -21,6 +21,7 @@ import os
 import threading
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import uuid4
 
 import board
@@ -50,6 +51,14 @@ TRIAL_HEADERS = [
     "pir_event",
     "error",
 ]
+
+
+def default_csv_path():
+    """Create the UTC-date results directory and return this version's CSV path."""
+    date_folder = datetime.now(timezone.utc).date().isoformat()
+    results_dir = Path(__file__).resolve().parents[1] / "results" / date_folder
+    results_dir.mkdir(parents=True, exist_ok=True)
+    return results_dir / "hardened_sensor_trial.csv"
 
 
 def utc_timestamp():
@@ -277,8 +286,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--csv",
         type=str,
-        default="sensor_trial.csv",
-        help="Append-only instrumented trial CSV (default: sensor_trial.csv)",
+        default=None,
+        help="Append-only trial CSV (default: date-wise results/hardened_sensor_trial.csv)",
     )
     parser.add_argument(
         "--interval",
@@ -293,4 +302,4 @@ if __name__ == "__main__":
         help="Trial duration in minutes (default: 15)",
     )
     args = parser.parse_args()
-    main(args.csv, args.interval, args.duration_minutes)
+    main(args.csv or default_csv_path(), args.interval, args.duration_minutes)
