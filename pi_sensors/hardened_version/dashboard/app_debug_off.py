@@ -27,7 +27,7 @@ HARDENED-VARIANT DEVELOPMENT SETTINGS:
 
 Examples (run from ~/pi_sensors/hardened_version/dashboard/):
     # Separate logs:
-    RESULTS_DIR="../../results/$(date -u +%F)"
+    RESULTS_DIR="../../results/pi/$(date -u +%F)"
     python3 app_debug_off.py --csv "$RESULTS_DIR/hardened_dht_log.csv" \
         --pir-csv "$RESULTS_DIR/hardened_pir_log.csv" --port 5001
 
@@ -58,6 +58,7 @@ app = Flask(__name__)
 RESULTS_DIR = (
     Path(__file__).resolve().parents[2]
     / "results"
+    / "pi"
     / datetime.now(timezone.utc).date().isoformat()
 )
 CSV_PATH = str(RESULTS_DIR / "hardened_dht_log.csv")

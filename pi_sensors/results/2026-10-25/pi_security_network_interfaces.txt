@@ -1,3 +1,0 @@
-lo               UNKNOWN        127.0.0.1/8 ::1/128 
-eth0             UP             192.168.88.230/24 2604:2a00:ffd0:42b0:8aa2:9eff:fe67:6eb2/64 fe80::8aa2:9eff:fe67:6eb2/64 
-wlan0            UP             192.168.88.229/24 2604:2a00:ffd0:42b0:8aa2:9eff:fe67:6eb3/64 fe80::8aa2:9eff:fe67:6eb3/64 

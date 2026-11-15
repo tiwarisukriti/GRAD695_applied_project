@@ -1,0 +1,10 @@
+Sanitized packet-capture summary
+Capture: initial_capture_pi.pcapng
+Collection platform: Windows (specific host metadata removed)
+UTC date: 2025-10-25 (synthetic)
+Packets: 68,985
+Start: 2025-10-25T14:18:19.290Z
+End: 2025-10-25T14:32:13.679Z
+Duration: 00:13:54.389
+
+Packet contents, addresses, identifiers, hardware details, and host-specific metadata are omitted. The original capture is retained privately and is not included in the public evidence archive.

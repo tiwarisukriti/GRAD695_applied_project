@@ -32,10 +32,10 @@ python3 combined_logger.py --interval 2 --duration-minutes 15
 ```
 
 The defaults are a two-second DHT22 interval and a 15-minute trial. The logger
-creates or appends to `../results/<UTC-date>/hardened_sensor_trial.csv`. Use
-`--csv` to choose another path. Runs on the same UTC date share the file and
-remain distinguishable by their run IDs. It refuses to append the instrumented
-schema to a nonmatching existing CSV.
+creates or appends to `../results/pi/<UTC-date>/hardened_sensor_trial.csv`.
+Use `--csv` to choose another path. Runs on the same UTC date share the file
+and remain distinguishable by their run IDs. It refuses to append the
+instrumented schema to a nonmatching existing CSV.
 
 The CSV contains explicit trial start/end rows, every DHT22 attempt, and
 asynchronous PIR motion events. Each row has a UUID run ID, UTC timestamp with
@@ -50,7 +50,7 @@ In another terminal, launch the matching dashboard:
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/hardened_version/dashboard
 source ~/sensor-env/bin/activate
-RESULTS_DIR="../../results/$(date -u +%F)"
+RESULTS_DIR="../../results/pi/$(date -u +%F)"
 read -r -p "Dashboard username: " DASHBOARD_USERNAME
 export DASHBOARD_USERNAME
 read -r -s -p "Dashboard password: " DASHBOARD_PASSWORD

@@ -30,10 +30,10 @@ python3 combined_logger.py --interval 2 --duration-minutes 15
 
 The logger defaults to these settings if `--interval` and `--duration-minutes`
 are omitted. By default, it creates or appends to
-`../results/<UTC-date>/baseline_sensor_trial.csv`. Use `--csv` to choose another
-path. It refuses to append the instrumented schema to a nonmatching existing
-CSV. Runs on the same UTC date share the file and remain distinguishable by
-their run IDs.
+`../results/pi/<UTC-date>/baseline_sensor_trial.csv`. Use `--csv` to choose
+another path. It refuses to append the instrumented schema to a nonmatching
+existing CSV. Runs on the same UTC date share the file and remain
+distinguishable by their run IDs.
 
 The CSV records `TRIAL_START`, every `DHT22_ATTEMPT`, each `PIR_EVENT`, and
 `TRIAL_END`. DHT22 attempts have `success`, `error`, or `no_data` outcomes.
@@ -48,7 +48,7 @@ In another terminal, launch the matching dashboard against that CSV:
 ```bash
 cd ~/GRAD695_applied_project/pi_sensors/baseline_version/dashboard
 source ~/sensor-env/bin/activate
-RESULTS_DIR="../../results/$(date -u +%F)"
+RESULTS_DIR="../../results/pi/$(date -u +%F)"
 python3 app.py --combined-csv "$RESULTS_DIR/baseline_sensor_trial.csv" --port 5000
 ```
 

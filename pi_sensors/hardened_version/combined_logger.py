@@ -56,7 +56,7 @@ TRIAL_HEADERS = [
 def default_csv_path():
     """Create the UTC-date results directory and return this version's CSV path."""
     date_folder = datetime.now(timezone.utc).date().isoformat()
-    results_dir = Path(__file__).resolve().parents[1] / "results" / date_folder
+    results_dir = Path(__file__).resolve().parents[1] / "results" / "pi" / date_folder
     results_dir.mkdir(parents=True, exist_ok=True)
     return results_dir / "hardened_sensor_trial.csv"
 
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         "--csv",
         type=str,
         default=None,
-        help="Append-only trial CSV (default: date-wise results/hardened_sensor_trial.csv)",
+        help="Append-only trial CSV (default: results/pi/<UTC-date>/hardened_sensor_trial.csv)",
     )
     parser.add_argument(
         "--interval",

@@ -26,7 +26,7 @@ INTENTIONALLY INSECURE BASELINE for the staged cybersecurity project:
 
 Examples (run from ~/pi_sensors/dashboard/):
     # Separate logs:
-    RESULTS_DIR="../../results/$(date -u +%F)"
+    RESULTS_DIR="../../results/pi/$(date -u +%F)"
     python3 app.py --csv "$RESULTS_DIR/baseline_dht_log.csv" \
         --pir-csv "$RESULTS_DIR/baseline_pir_log.csv" --port 5000
 
@@ -54,6 +54,7 @@ app = Flask(__name__)
 RESULTS_DIR = (
     Path(__file__).resolve().parents[2]
     / "results"
+    / "pi"
     / datetime.now(timezone.utc).date().isoformat()
 )
 CSV_PATH = str(RESULTS_DIR / "baseline_dht_log.csv")

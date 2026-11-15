@@ -24,7 +24,7 @@ READ_INTERVAL_SECONDS = 2
 
 def default_csv_path() -> str:
     date_folder = datetime.now(timezone.utc).date().isoformat()
-    results_dir = Path(__file__).resolve().parents[1] / "results" / date_folder
+    results_dir = Path(__file__).resolve().parents[1] / "results" / "pi" / date_folder
     results_dir.mkdir(parents=True, exist_ok=True)
     return str(results_dir / "hardened_dht_log.csv")
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         "--csv",
         type=str,
         default=None,
-        help="Path to CSV file (default: date-wise results/hardened_dht_log.csv)",
+        help="Path to CSV file (default: results/pi/<UTC-date>/hardened_dht_log.csv)",
     )
     args = parser.parse_args()
     read_loop(args.csv or default_csv_path())

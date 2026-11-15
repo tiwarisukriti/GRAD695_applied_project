@@ -1,0 +1,55 @@
+# Nmap 7.94SVN scan initiated Sat Oct 25 10:11:18 2025 as: nmap -sT -Pn -sV -p 22,25,110,111,119,143,465,563,587,993,995,5000 -oN baseline_wsl_logger_off.txt [REDACTED-IPv4]
+Nmap scan report for [REDACTED-IPv4]
+Host is up (0.0037s latency).
+
+PORT     STATE  SERVICE    VERSION
+22/tcp   open   ssh        OpenSSH 10.0p2 Debian 7+deb13u4 (protocol 2.0)
+25/tcp   closed smtp
+110/tcp  closed pop3
+111/tcp  open   rpcbind    2-4 (RPC #100000)
+119/tcp  closed nntp
+143/tcp  closed imap
+465/tcp  closed smtps
+563/tcp  closed snews
+587/tcp  closed submission
+993/tcp  closed imaps
+995/tcp  closed pop3s
+5000/tcp open   upnp?
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port5000-TCP:V=7.94SVN%I=7%D=10/25%Time=6ADE626D%P=x86_64-pc-linux-gnu%
+SF:r(GetRequest,1CF8,"HTTP/1\.1\x20200\x20OK\r\nServer:\x20Werkzeug/3\.1\.
+SF:8\x20Python/3\.13\.5\r\nDate:\x20Sun,\x2025\x20Oct\x202026\x2020:11:23\
+SF:x20GMT\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Lengt
+SF:h:\x2020885\r\nConnection:\x20close\r\n\r\n<!DOCTYPE\x20html>\n<html\x2
+SF:0lang=\"en\">\n<head>\n<!--\x20Basic\x20browser\x20metadata:\x20UTF-8\x
+SF:20permits\x20readable\x20text\x20and\x20viewport\x20enables\x20mobile\x
+SF:20layout\.\x20-->\n<meta\x20charset=\"UTF-8\">\n<meta\x20name=\"viewpor
+SF:t\"\x20content=\"width=device-width,\x20initial-scale=1\.0\">\n<!--\x20
+SF:Title\x20updated\x20to\x20mention\x20both\x20physical\x20sensors\x20sho
+SF:wn\x20on\x20the\x20same\x20page\.\x20-->\n<title>SENSOR\x20MONITOR\x20-
+SF:\x20DHT22\x20\+\x20PIR</title>\n<!--\x20Existing\x20Chart\.js\x20CDN:\x
+SF:20the\x20DHT22\x20graph\x20uses\x20it,\x20but\x20PIR\x20tables\x20do\x2
+SF:0not\.\x20-->\n<script\x20src=\"https://cdnjs\.cloudflare\.com/ajax/lib
+SF:s/Chart\.js/4\.4\.1/chart\.umd\.min\.js\"></script>\n<!--\x20CSS\x20kee
+SF:ps\x20the\x20original\x20dashboard\x20styling\x20and\x20adds\x20only\x2
+SF:0PIR-specific\x20rules\.\x20-->\n<style>\n\x20\x20/\*\x20Centralize\x20
+SF:colors\x20and\x20fonts\x20so\x20both\x20sensor\x20sections\x20use\x20th
+SF:e\x20same\x20theme\.\x20\*/\n\x20\x20:root\x20{\n\x20\x20\x20\x20--bg:\
+SF:x20#F")%r(RTSPRequest,16C,"<!DOCTYPE\x20HTML>\n<html\x20lang=\"en\">\n\
+SF:x20\x20\x20\x20<head>\n\x20\x20\x20\x20\x20\x20\x20\x20<meta\x20charset
+SF:=\"utf-8\">\n\x20\x20\x20\x20\x20\x20\x20\x20<title>Error\x20response</
+SF:title>\n\x20\x20\x20\x20</head>\n\x20\x20\x20\x20<body>\n\x20\x20\x20\x
+SF:20\x20\x20\x20\x20<h1>Error\x20response</h1>\n\x20\x20\x20\x20\x20\x20\
+SF:x20\x20<p>Error\x20code:\x20400</p>\n\x20\x20\x20\x20\x20\x20\x20\x20<p
+SF:>Message:\x20Bad\x20request\x20version\x20\('RTSP/1\.0'\)\.</p>\n\x20\x
+SF:20\x20\x20\x20\x20\x20\x20<p>Error\x20code\x20explanation:\x20400\x20-\
+SF:x20Bad\x20request\x20syntax\x20or\x20unsupported\x20method\.</p>\n\x20\
+SF:x20\x20\x20</body>\n</html>\n")%r(HTTPOptions,C7,"HTTP/1\.1\x20200\x20O
+SF:K\r\nServer:\x20Werkzeug/3\.1\.8\x20Python/3\.13\.5\r\nDate:\x20Sun,\x2
+SF:025\x20Oct\x202026\x2020:11:40\x20GMT\r\nContent-Type:\x20text/html;\x2
+SF:0charset=utf-8\r\nAllow:\x20HEAD,\x20OPTIONS,\x20GET\r\nContent-Length:
+SF:\x200\r\nConnection:\x20close\r\n\r\n");
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sat Oct 25 10:12:52 2025 -- 1 IP address (1 host up) scanned in 94.28 seconds

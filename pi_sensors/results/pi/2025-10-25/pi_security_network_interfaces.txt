@@ -1,0 +1,3 @@
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             [REDACTED-IPv4]/24 [REDACTED-IPv6]/64 [REDACTED-IPv6]/64 
+wlan0            UP             [REDACTED-IPv4]/24 [REDACTED-IPv6]/64 [REDACTED-IPv6]/64 

@@ -65,10 +65,11 @@ attempt-based reliability is:
 ```
 
 Sensor and security evidence is collected in [`pi_sensors/results/`](./pi_sensors/results/),
-organized into folders by UTC date. New sensor logs go to the matching date
-folder automatically; baseline and hardened filenames stay distinct. Existing
-timestamped evidence has been filed by its recorded date. Dates in the
-published evidence may be synthetic shifts, as explained below.
+organized by source platform (`pi`, `wsl`, or `windows`) and then UTC date.
+New sensor logs go to `pi/<UTC-date>` automatically; baseline and hardened
+filenames stay distinct. Existing timestamped evidence has been filed by its
+recorded date. Dates in the published evidence may be synthetic shifts, as
+explained below.
 
 PIR is event-driven. Its motion transitions are logged and counted as events;
 they are not treated as periodic read attempts. Trial records include a UUID
@@ -112,14 +113,14 @@ controls and results that have actually been configured and measured on the Pi.
 
 ## Publishing sensor and scan evidence
 
-Evidence files committed for public sharing should be sanitized copies. The
-sensor CSVs, API snapshots, and scan outputs in this repository use synthetic
-date shifts where timestamps are present; elapsed intervals are preserved.
-The newest run ID and scan target addresses are redacted. Do not publish
-original run IDs, exact home/activity timestamps, public or private device
-addresses, credentials, private keys, or unredacted configuration files. Keep
-original evidence in a private location; clearly label sanitized timestamps
-so readers do not interpret them as wall-clock dates.
+Only sanitized copies should be committed to a public repository. Do not
+assume every file in `pi_sensors/results/` is sanitized: raw packet captures,
+scan reports, API snapshots, and host/network configuration may contain
+private or public device addresses, MAC addresses, host details, run IDs,
+credentials, private keys, or exact activity timestamps. Review each file
+before publishing, keep unredacted originals in a private location, and clearly
+label any synthetic timestamp shifts so they are not mistaken for wall-clock
+dates.
 
 ## Repository layout
 
@@ -128,10 +129,15 @@ pi_sensors/
   00_install.sh
   results/
     README.md
-    YYYY-MM-DD/
-      baseline_*.csv
-      hardened_*.csv
-      security evidence...
+    pi/
+      YYYY-MM-DD/
+        sensor and Pi evidence...
+    wsl/
+      YYYY-MM-DD/
+        WSL evidence...
+    windows/
+      YYYY-MM-DD/
+        Windows evidence...
   baseline_version/
     README.md
     combined_logger.py

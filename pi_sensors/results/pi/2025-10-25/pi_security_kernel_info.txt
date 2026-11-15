@@ -1,0 +1,1 @@
+Linux raspberrypi5 6.18.50+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.50-1+rpt1 (2025-09-11) aarch64 GNU/Linux

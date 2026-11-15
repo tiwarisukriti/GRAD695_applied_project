@@ -54,7 +54,7 @@ jsonpatch==1.32
 jsonpointer==2.4
 jsonschema==4.19.2
 jsonschema-specifications==2023.12.1
-lgpio==0.2.2.0
+lgpio==[REDACTED-IPv4]
 libarchive-c==5.1
 libevdev==0.11
 linkify-it-py==2.0.3
@@ -100,7 +100,7 @@ PyOpenGL==3.1.9
 PyQt5==5.15.11
 PyQt5_sip==12.17.0
 pyserial==3.5
-pysmbc==1.0.25.1
+pysmbc==[REDACTED-IPv4]
 python-apt==3.0.0
 python-dateutil==2.9.0
 python-prctl==1.8.1

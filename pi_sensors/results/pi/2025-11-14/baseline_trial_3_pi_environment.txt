@@ -1,0 +1,5 @@
+2025-11-13T20:12:15-05:00
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+/home/[REDACTED-USER]/sensor-env/bin/python3
+Python 3.13.5

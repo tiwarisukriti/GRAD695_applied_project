@@ -1,0 +1,10 @@
+Sanitized packet-capture summary
+Capture: baseline_wireshark_2.pcapng
+Collection platform: Windows (specific host metadata removed)
+UTC date: 2025-11-14 (synthetic)
+Packets: 18,617
+Start: 2025-11-14T00:19:09.812Z
+End: 2025-11-14T00:31:28.486Z
+Duration: 00:12:18.674
+
+Packet contents, addresses, identifiers, hardware details, and host-specific metadata are omitted. The original capture is retained privately and is not included in the public evidence archive.

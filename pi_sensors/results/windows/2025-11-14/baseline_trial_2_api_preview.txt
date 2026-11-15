@@ -5,31 +5,31 @@ dht_attempt	{ age_seconds: 1.36, stale_after_seconds: 10, status: "fresh", … }
 age_seconds	1.36
 stale_after_seconds	10
 status	"fresh"
-timestamp_utc	"2026-11-14T03:18:28.415+00:00"
+timestamp_utc	"2025-11-14T00:18:28.415+00:00"
 dht_sample	{ age_seconds: 1.36, stale_after_seconds: 10, status: "fresh", … }
 age_seconds	1.36
 stale_after_seconds	10
 status	"fresh"
-timestamp_utc	"2026-11-14T03:18:28.415+00:00"
+timestamp_utc	"2025-11-14T00:18:28.415+00:00"
 pir_event	{ age_seconds: 17.53, stale_after_seconds: 10, status: "stale", … }
 age_seconds	17.53
 stale_after_seconds	10
 status	"stale"
-timestamp_utc	"2026-11-14T03:18:12.252+00:00"
+timestamp_utc	"2025-11-14T00:18:12.252+00:00"
 latest	{ humidity_pct: "34.8", temperature_c: "23.2", temperature_f: "73.8", … }
 humidity_pct	"34.8"
 temperature_c	"23.2"
 temperature_f	"73.8"
-timestamp	"2026-11-14T03:18:28.415+00:00"
+timestamp	"2025-11-14T00:18:28.415+00:00"
 pir	{ count: 2, detections: 1, events: (2)[…], … }
 count	2
 detections	1
 events	[ {…}, {…} ]
-0	{ event: "MOTION_STOPPED", timestamp: "2026-11-14T03:18:04.594+00:00" }
-1	{ event: "MOTION_DETECTED", timestamp: "2026-11-14T03:18:12.252+00:00" }
-latest	{ event: "MOTION_DETECTED", timestamp: "2026-11-14T03:18:12.252+00:00" }
+0	{ event: "MOTION_STOPPED", timestamp: "2025-11-14T00:18:04.594+00:00" }
+1	{ event: "MOTION_DETECTED", timestamp: "2025-11-14T00:18:12.252+00:00" }
+latest	{ event: "MOTION_DETECTED", timestamp: "2025-11-14T00:18:12.252+00:00" }
 event	"MOTION_DETECTED"
-timestamp	"2026-11-14T03:18:12.252+00:00"
+timestamp	"2025-11-14T00:18:12.252+00:00"
 readings	(18)[ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
 0	{ humidity_pct: "35.0", temperature_c: "23.2", temperature_f: "73.8", … }
 1	{ humidity_pct: "34.9", temperature_c: "23.2", temperature_f: "73.8", … }
@@ -49,20 +49,20 @@ readings	(18)[ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {�
 15	{ humidity_pct: "35.2", temperature_c: "23.2", temperature_f: "73.8", … }
 16	{ humidity_pct: "35.0", temperature_c: "23.2", temperature_f: "73.8", … }
 17	{ humidity_pct: "34.8", temperature_c: "23.2", temperature_f: "73.8", … }
-trace	{ api_timestamp_utc: "2026-11-14T03:18:29.777+00:00", logger_timestamp_utc: "2026-11-14T03:18:28.415+00:00", run_id: "ccd4b438-493c-4520-a1ae-0b79d1896ec1" }
-api_timestamp_utc	"2026-11-14T03:18:29.777+00:00"
-logger_timestamp_utc	"2026-11-14T03:18:28.415+00:00"
-run_id	"ccd4b438-493c-4520-a1ae-0b79d1896ec1"
+trace	{ api_timestamp_utc: "2025-11-14T00:18:29.777+00:00", logger_timestamp_utc: "2025-11-14T00:18:28.415+00:00", run_id: "[REDACTED-RUN-ID]" }
+api_timestamp_utc	"2025-11-14T00:18:29.777+00:00"
+logger_timestamp_utc	"2025-11-14T00:18:28.415+00:00"
+run_id	"[REDACTED-RUN-ID]"
 trial	{ attempts: 18, duration_seconds: 900, elapsed_seconds: 40.326, … }
 attempts	18
 duration_seconds	900
 elapsed_seconds	40.326
 ended_at_utc	null
 failures	0
-latest_attempt	{ outcome: "success", timestamp_utc: "2026-11-14T03:18:28.415+00:00" }
-logger_timestamp_utc	"2026-11-14T03:18:28.415+00:00"
+latest_attempt	{ outcome: "success", timestamp_utc: "2025-11-14T00:18:28.415+00:00" }
+logger_timestamp_utc	"2025-11-14T00:18:28.415+00:00"
 reliability_pct	100.0JS:100
-run_id	"ccd4b438-493c-4520-a1ae-0b79d1896ec1"
-started_at_utc	"2026-11-14T03:17:48.089+00:00"
+run_id	"[REDACTED-RUN-ID]"
+started_at_utc	"2025-11-14T00:17:48.089+00:00"
 status	"running"
 successes	18
