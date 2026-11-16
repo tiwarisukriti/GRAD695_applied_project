@@ -65,9 +65,80 @@ The hash-generation command prompts twice for a password and requires at least
 the plaintext is not saved by the application.
 
 The default server URL is `http://127.0.0.1:5001`; the browser prompts for
-credentials. This loopback mode is useful for local checks on the Pi. For
-authorized remote dashboard access, use a certificate whose subject
-alternative name matches the Pi's DNS name or IP address, then bind with TLS:
+credentials. This loopback mode is useful for local checks on the Pi.
+
+## Deploy behind Nginx with HTTPS
+
+The deployment examples in `deploy/` keep Gunicorn on loopback and terminate
+TLS at Nginx on port 443. Use a certificate trusted by the client and whose
+subject alternative name matches the hostname or IP address used to reach the
+Pi. Do not expose Gunicorn directly.
+
+Install Nginx, disable its packaged default site, and install the supplied
+reverse-proxy configuration after placing the certificate and private key at
+the configured paths:
+
+```bash
+cd ~/GRAD695_applied_project/pi_sensors/hardened_version
+sudo apt update
+sudo apt install -y nginx
+sudo systemctl disable --now nginx
+sudo unlink /etc/nginx/sites-enabled/default
+sudo install -m 0644 deploy/nginx-dashboard.conf /etc/nginx/sites-available/sensor-dashboard
+sudo ln -sfn /etc/nginx/sites-available/sensor-dashboard /etc/nginx/sites-enabled/sensor-dashboard
+sudo nginx -t
+```
+
+The configuration expects `/etc/ssl/certs/pi-dashboard.crt` and
+`/etc/ssl/private/pi-dashboard.key`; change those paths if needed. Keep the key
+root-owned and readable only by root. Install and start the per-user Gunicorn
+service (replace `pi` with the Pi account that owns the checkout):
+
+```bash
+sudo install -m 0644 deploy/sensor-dashboard@.service /etc/systemd/system/
+sudo install -o root -g root -m 0600 /dev/null /etc/default/sensor-dashboard-pi
+sudoedit /etc/default/sensor-dashboard-pi
+```
+
+Set `DASHBOARD_USERNAME` and a `DASHBOARD_PASSWORD_HASH` generated with
+`python3 app_debug_off.py --generate-password-hash` in that environment file.
+Run the hash generator from the dashboard directory with the sensor
+environment active. Do not put the plaintext password in the environment file.
+Start the dashboard and proxy:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now sensor-dashboard@pi.service
+sudo systemctl enable --now nginx
+```
+
+For this service instance, the dashboard reads
+`results/pi/live/hardened_sensor_trial.csv`. Create that directory and run the
+logger with `--csv` pointing to the same file when you want the deployed
+dashboard to display a trial:
+
+```bash
+RESULTS_DIR="../results/pi/live"
+mkdir -p "$RESULTS_DIR"
+python3 combined_logger.py --csv "$RESULTS_DIR/hardened_sensor_trial.csv" \
+  --interval 2 --duration-minutes 15
+```
+
+The `DASHBOARD_TRUST_PROXY=nginx` setting trusts one forwarding hop. Nginx
+overwrites `X-Forwarded-For` with the connected client's address; Gunicorn must
+remain bound to `127.0.0.1:5001`. This lets the application's per-client
+lockout distinguish remote clients. It is not safe to expose the Gunicorn
+listener beyond loopback.
+
+Do not apply firewall changes until you have verified which client source
+address the Pi sees and have a recovery path for SSH. The intended inbound
+policy is default-deny with TCP/22 and TCP/443 allowed only from the authorized
+client source. The collector can compare observed UFW rules with a Pi-visible
+source CIDR that you enter; it never changes firewall settings. Nmap results
+from the authorized test client are still needed to verify actual exposure.
+
+The direct-TLS command below is an optional standalone test mode, not the
+Nginx deployment:
 
 ```bash
 python3 app_debug_off.py \
@@ -81,13 +152,11 @@ The app refuses remote binds without both TLS files, and returns an error if
 dashboard credentials are missing or wrong. Invalid credentials are rejected
 with HTTP 401; after five failures from one source address within five minutes,
 requests from that address receive HTTP 429 with `Retry-After` for 15 minutes.
-The address comes from the direct connection; this app does not trust forwarded
-IP headers. Behind a reverse proxy, all clients may appear to share the proxy's
-address. Use proxy-side lockout or add explicitly trusted proxy handling before
-relying on per-client lockout. The single-worker Gunicorn configuration keeps
-lockout state consistent, but that state is in memory and resets when the
-process restarts. Do not commit credentials or private keys. Open
-`https://<pi-name-or-ip>:5001` from the authorized network and verify the
+Without `DASHBOARD_TRUST_PROXY=nginx`, the address comes from the direct
+connection and forwarded IP headers are ignored. The single-worker Gunicorn
+configuration keeps lockout state consistent, but that state is in memory and
+resets when the process restarts. Do not commit credentials or private keys.
+For the Nginx deployment, open `https://<pi-name-or-ip>/` and verify the
 certificate.
 
 The dashboard also sends `X-Frame-Options: DENY` and
@@ -113,6 +182,33 @@ date folder. Check that the run ID matches across all artifacts before
 calculating or reporting results. The 15-minute ≥95% reliability criterion
 requires an actual completed hardware run; source code or historical
 successful rows alone do not establish that it passed.
+
+### One-run evidence collection from WSL
+
+[`../collect_hardened_evidence.py`](../collect_hardened_evidence.py) runs on
+the authorized WSL client and connects to the Pi over SSH; it does not need to
+be copied to or run on the Pi. It starts a temporary dashboard against a new
+trial CSV and packages the collected results into a ZIP. It does not update
+packages or change Pi configuration. It separately records Nginx/Gunicorn
+service and listener facts and probes the deployed HTTPS endpoint without
+sending credentials; this is distinct from its temporary trial dashboard. For
+example, from WSL:
+
+```bash
+python3 /mnt/c/Users/<windows-user>/OneDrive/Documents/GitHub/GRAD695_applied_project/pi_sensors/collect_hardened_evidence.py
+```
+
+The collector prompts for an optional existing TLS certificate/key. Without a
+trusted remote TLS endpoint, HTTPS and packet-capture checks are reported as
+not run; loopback HTTP through SSH is not represented as an HTTPS test. It
+does not run Nmap, Nikto, or Hydra, generate SSH failures for Fail2ban, trigger
+the web lockout threshold, or reboot the Pi. Those checks can affect access or
+availability and require separately controlled evidence. The collector asks
+for a dashboard screenshot while its temporary dashboard is live, but does not
+independently validate screenshot contents. It checks UFW's active state but
+compares rules with the Pi-visible source CIDR entered at runtime; package
+update status is a read-only APT simulation, and permission checks cover the
+project source paths only. Review and sanitize its ZIP before publishing.
 
 ## Hardening and evidence boundary
 

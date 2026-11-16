@@ -1,0 +1,24 @@
+[Unit]
+Description=Hardened sensor dashboard for user %i
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=/home/%i/GRAD695_applied_project/pi_sensors/hardened_version/dashboard
+EnvironmentFile=/etc/default/sensor-dashboard-%i
+Environment=DASHBOARD_TRUST_PROXY=nginx
+ExecStartPre=/usr/bin/mkdir -p /home/%i/GRAD695_applied_project/pi_sensors/results/pi/live
+ExecStart=/home/%i/sensor-env/bin/python3 /home/%i/GRAD695_applied_project/pi_sensors/hardened_version/dashboard/app_debug_off.py --host 127.0.0.1 --port 5001 --combined-csv /home/%i/GRAD695_applied_project/pi_sensors/results/pi/live/hardened_sensor_trial.csv
+Restart=on-failure
+RestartSec=5
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/%i/GRAD695_applied_project/pi_sensors/results/pi
+
+[Install]
+WantedBy=multi-user.target

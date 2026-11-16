@@ -50,11 +50,21 @@ from pathlib import Path
 
 # Flask serves the HTML page and converts Python dictionaries into JSON.
 from flask import Flask, Response, jsonify, render_template, request
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
 # Create the web application; templates/index.html is loaded by Flask.
 app = Flask(__name__)
+_original_wsgi_app = app.wsgi_app
+
+
+def configure_trusted_proxy():
+    """Trust one forwarding hop only when explicitly deployed behind Nginx."""
+    app.wsgi_app = _original_wsgi_app
+    if os.environ.get("DASHBOARD_TRUST_PROXY", "").strip().lower() == "nginx":
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
 
 # Standalone logger defaults use the same dated files as dht22_reader.py and
 # pir_reader.py.
@@ -708,6 +718,7 @@ def main():
     tls_context = (
         (args.tls_cert, args.tls_key) if args.tls_cert and args.tls_key else None
     )
+    configure_trusted_proxy()
     scheme = "https" if tls_context else "http"
     print(
         f"Dashboard starting with Gunicorn at {scheme}://{args.host}:{args.port}",

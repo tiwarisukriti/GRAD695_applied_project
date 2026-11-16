@@ -1,5 +1,6 @@
 import base64
 import io
+import os
 import sys
 import unittest
 from contextlib import redirect_stdout
@@ -15,11 +16,15 @@ class DashboardSecurityTests(unittest.TestCase):
         self.old_username = dashboard.DASHBOARD_USERNAME
         self.old_password_hash = dashboard.DASHBOARD_PASSWORD_HASH
         self.old_testing = dashboard.app.config.get("TESTING", False)
+        self.old_wsgi_app = dashboard.app.wsgi_app
+        self.old_proxy_setting = os.environ.get("DASHBOARD_TRUST_PROXY")
         dashboard.DASHBOARD_USERNAME = "dashboard-user"
         dashboard.DASHBOARD_PASSWORD_HASH = generate_password_hash(
             "long-test-password"
         )
         dashboard.app.config["TESTING"] = True
+        os.environ["DASHBOARD_TRUST_PROXY"] = "nginx"
+        dashboard.configure_trusted_proxy()
         with dashboard._login_failures_lock:
             dashboard._login_failures.clear()
         self.client = dashboard.app.test_client()
@@ -30,6 +35,11 @@ class DashboardSecurityTests(unittest.TestCase):
         dashboard.DASHBOARD_USERNAME = self.old_username
         dashboard.DASHBOARD_PASSWORD_HASH = self.old_password_hash
         dashboard.app.config["TESTING"] = self.old_testing
+        if self.old_proxy_setting is None:
+            os.environ.pop("DASHBOARD_TRUST_PROXY", None)
+        else:
+            os.environ["DASHBOARD_TRUST_PROXY"] = self.old_proxy_setting
+        dashboard.app.wsgi_app = self.old_wsgi_app
 
     @staticmethod
     def auth_header(username, password):
@@ -91,6 +101,49 @@ class DashboardSecurityTests(unittest.TestCase):
         )
         self.assertEqual(locked_response.status_code, 429)
         self.assertEqual(other_client_response.status_code, 200)
+
+    def test_proxy_forwarded_client_addresses_keep_lockouts_separate(self):
+        bad_credentials = self.auth_header("dashboard-user", "wrong-password")
+        for attempt in range(dashboard.FAILED_LOGIN_LIMIT):
+            response = self.client.get(
+                "/",
+                headers={
+                    **bad_credentials,
+                    "X-Forwarded-For": "192.0.2.21",
+                },
+                environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+            )
+            self.assertEqual(response.status_code, 401 if attempt < 4 else 429)
+
+        valid_credentials = self.auth_header(
+            "dashboard-user", "long-test-password"
+        )
+        response = self.client.get(
+            "/",
+            headers={
+                **valid_credentials,
+                "X-Forwarded-For": "192.0.2.22",
+            },
+            environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_forwarded_addresses_are_ignored_without_explicit_proxy_setting(self):
+        os.environ.pop("DASHBOARD_TRUST_PROXY", None)
+        dashboard.configure_trusted_proxy()
+        bad_credentials = self.auth_header("dashboard-user", "wrong-password")
+
+        for attempt in range(dashboard.FAILED_LOGIN_LIMIT):
+            response = self.client.get(
+                "/",
+                headers={
+                    **bad_credentials,
+                    "X-Forwarded-For": "192.0.2.{}".format(30 + attempt),
+                },
+                environ_overrides={"REMOTE_ADDR": "127.0.0.1"},
+            )
+
+        self.assertEqual(response.status_code, 429)
 
 
 if __name__ == "__main__":
