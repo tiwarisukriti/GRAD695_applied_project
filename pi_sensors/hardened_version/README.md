@@ -2,11 +2,13 @@
 
 This folder contains the project's hardened-variant sensor collector and
 dashboard. The dashboard entry point, `dashboard/app_debug_off.py`, disables
-Flask debug mode, requires environment-provided HTTP Basic credentials, and
-binds to loopback by default. Any non-loopback bind requires a TLS certificate
-and private key. This is still a trial/development server, not a production
-WSGI deployment; it does not configure firewall rules, SSH protections, or
-intrusion monitoring. Verify those controls separately on the Raspberry Pi.
+Flask debug mode, uses a Gunicorn WSGI server, verifies a Werkzeug-hashed
+password, and binds to loopback by default. Five failed logins from one
+address within five minutes trigger a 15-minute lockout. Any non-loopback bind
+requires a TLS certificate and private key. The lockout is process-local and
+resets on restart; this project does not configure firewall rules, SSH
+protections, or intrusion monitoring. Verify those controls separately on the
+Raspberry Pi.
 
 For shared hardware setup and evidence context, see the [project README](../../README.md).
 The date-wise sensor and security evidence archive is documented in
@@ -17,7 +19,7 @@ The date-wise sensor and security evidence archive is documented in
 - `combined_logger.py` — instrumented, time-bounded DHT22 and PIR collection.
 - `dht22_reader.py` / `pir_reader.py` — standalone legacy collectors.
 - `dashboard/app_debug_off.py` — Flask API and dashboard server with debug
-  mode disabled.
+  mode disabled, served by Gunicorn.
 - `dashboard/templates/index.html` — browser dashboard.
 
 ## Run a 15-minute instrumented trial
@@ -53,14 +55,14 @@ source ~/sensor-env/bin/activate
 RESULTS_DIR="../../results/pi/$(date -u +%F)"
 read -r -p "Dashboard username: " DASHBOARD_USERNAME
 export DASHBOARD_USERNAME
-read -r -s -p "Dashboard password: " DASHBOARD_PASSWORD
-echo
-export DASHBOARD_PASSWORD
+DASHBOARD_PASSWORD_HASH="$(python3 app_debug_off.py --generate-password-hash)"
+export DASHBOARD_PASSWORD_HASH
 python3 app_debug_off.py --combined-csv "$RESULTS_DIR/hardened_sensor_trial.csv"
 ```
 
-Choose a unique dashboard password of at least 12 characters. The application
-refuses to start without both credentials or with a shorter password.
+The hash-generation command prompts twice for a password and requires at least
+12 characters. Only the Werkzeug password hash is stored in the environment;
+the plaintext is not saved by the application.
 
 The default server URL is `http://127.0.0.1:5001`; the browser prompts for
 credentials. This loopback mode is useful for local checks on the Pi. For
@@ -76,10 +78,20 @@ python3 app_debug_off.py \
 ```
 
 The app refuses remote binds without both TLS files, and returns an error if
-dashboard credentials are missing or wrong. Do not commit credentials or
-private keys. Open `https://<pi-name-or-ip>:5001` from the authorized network
-and verify the certificate. For anything beyond a controlled project trial,
-use a production WSGI server and a properly managed TLS/reverse-proxy setup.
+dashboard credentials are missing or wrong. Invalid credentials are rejected
+with HTTP 401; after five failures from one source address within five minutes,
+requests from that address receive HTTP 429 with `Retry-After` for 15 minutes.
+The address comes from the direct connection; this app does not trust forwarded
+IP headers. Behind a reverse proxy, all clients may appear to share the proxy's
+address. Use proxy-side lockout or add explicitly trusted proxy handling before
+relying on per-client lockout. The single-worker Gunicorn configuration keeps
+lockout state consistent, but that state is in memory and resets when the
+process restarts. Do not commit credentials or private keys. Open
+`https://<pi-name-or-ip>:5001` from the authorized network and verify the
+certificate.
+
+The dashboard also sends `X-Frame-Options: DENY` and
+`Content-Security-Policy: frame-ancestors 'none'` to prevent framing.
 
 The dashboard refreshes every five seconds and shows the trial status, run ID,
 elapsed/duration, attempt counts, reliability percentage, logger/API/browser

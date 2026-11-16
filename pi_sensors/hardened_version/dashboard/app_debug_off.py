@@ -19,10 +19,10 @@ run alongside EITHER logging setup without competing for the sensor pins.
 The browser calls /api/data every five seconds. The instrumented combined
 mode adds trial counters and synchronized logger/API/browser timestamps.
 
-HARDENED-VARIANT DEVELOPMENT SETTINGS:
+HARDENED-VARIANT SERVER SETTINGS:
 - Flask debug mode is disabled and HTTP Basic authentication is required.
 - Loopback is the default; non-loopback binds require a TLS certificate/key.
-- This is still a Flask development server, not a production deployment.
+- Gunicorn serves the application as a production WSGI server.
 - Keep the dashboard on the authorized private test network.
 
 Examples (run from ~/pi_sensors/hardened_version/dashboard/):
@@ -37,17 +37,20 @@ Examples (run from ~/pi_sensors/hardened_version/dashboard/):
 
 # argparse reads optional file paths and HTTP port from the command line.
 import argparse
-
-# csv.DictReader reads data rows as dictionaries keyed by the CSV header.
 import csv
+import getpass
 import hmac
 import ipaddress
+import math
 import os
+import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 # Flask serves the HTML page and converts Python dictionaries into JSON.
 from flask import Flask, Response, jsonify, render_template, request
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 # Create the web application; templates/index.html is loaded by Flask.
@@ -76,25 +79,71 @@ STALE_AFTER_SECONDS = 10
 # Credentials are supplied by the service environment rather than stored in
 # source control or exposed as command-line arguments.
 DASHBOARD_USERNAME = os.environ.get("DASHBOARD_USERNAME", "")
-DASHBOARD_PASSWORD = os.environ.get("DASHBOARD_PASSWORD", "")
+DASHBOARD_PASSWORD_HASH = os.environ.get("DASHBOARD_PASSWORD_HASH", "")
+
+FAILED_LOGIN_LIMIT = 5
+FAILED_LOGIN_WINDOW_SECONDS = 300
+LOGIN_LOCKOUT_SECONDS = 900
+MAX_TRACKED_LOGIN_CLIENTS = 1024
+_login_failures = {}
+_login_failures_lock = threading.Lock()
 
 # The two recognized PIR event strings are produced by pir_reader.py and
 # combined_logger.py. Reject other strings rather than displaying bad rows.
 VALID_PIR_EVENTS = {"MOTION_DETECTED", "MOTION_STOPPED"}
 
 
-@app.before_request
-def require_dashboard_authentication():
-    """Protect both the dashboard page and its JSON API with HTTP Basic Auth."""
-    if not DASHBOARD_USERNAME or not DASHBOARD_PASSWORD:
-        return Response(
-            "Dashboard credentials are not configured.\n",
-            status=503,
-            content_type="text/plain; charset=utf-8",
-        )
+def _prune_login_failures(now):
+    for client_ip, state in tuple(_login_failures.items()):
+        if state["locked_until"] > now:
+            continue
+        if state["locked_until"] or (
+            not state["failures"]
+            or now - state["failures"][-1] >= FAILED_LOGIN_WINDOW_SECONDS
+        ):
+            del _login_failures[client_ip]
 
-    credentials = request.authorization
-    valid_username = bool(
+
+def _record_failed_login(client_ip, now):
+    state = _login_failures.get(client_ip)
+    if state is None:
+        if len(_login_failures) >= MAX_TRACKED_LOGIN_CLIENTS:
+            eligible = [
+                address
+                for address, entry in _login_failures.items()
+                if entry["locked_until"] <= now
+            ]
+            if not eligible:
+                return LOGIN_LOCKOUT_SECONDS
+            oldest = min(
+                eligible, key=lambda address: _login_failures[address]["last_failure"]
+            )
+            del _login_failures[oldest]
+        state = {"failures": [], "last_failure": now, "locked_until": 0}
+        _login_failures[client_ip] = state
+
+    state["failures"] = [
+        failed_at
+        for failed_at in state["failures"]
+        if now - failed_at < FAILED_LOGIN_WINDOW_SECONDS
+    ]
+    state["failures"].append(now)
+    state["last_failure"] = now
+    if len(state["failures"]) >= FAILED_LOGIN_LIMIT:
+        state["locked_until"] = now + LOGIN_LOCKOUT_SECONDS
+        return LOGIN_LOCKOUT_SECONDS
+    return None
+
+
+def _authenticate_request(credentials, client_ip):
+    now = time.monotonic()
+    with _login_failures_lock:
+        _prune_login_failures(now)
+        state = _login_failures.get(client_ip)
+        if state and state["locked_until"] > now:
+            return "locked", math.ceil(state["locked_until"] - now)
+
+    username_valid = bool(
         credentials
         and credentials.username
         and hmac.compare_digest(
@@ -102,15 +151,49 @@ def require_dashboard_authentication():
             DASHBOARD_USERNAME.encode("utf-8"),
         )
     )
-    valid_password = bool(
+    password_valid = bool(
         credentials
         and credentials.password
-        and hmac.compare_digest(
-            credentials.password.encode("utf-8"),
-            DASHBOARD_PASSWORD.encode("utf-8"),
-        )
+        and check_password_hash(DASHBOARD_PASSWORD_HASH, credentials.password)
     )
-    if not (valid_username and valid_password):
+
+    now = time.monotonic()
+    with _login_failures_lock:
+        _prune_login_failures(now)
+        state = _login_failures.get(client_ip)
+        if state and state["locked_until"] > now:
+            return "locked", math.ceil(state["locked_until"] - now)
+        if username_valid and password_valid:
+            _login_failures.pop(client_ip, None)
+            return "authenticated", 0
+
+        retry_after = _record_failed_login(client_ip, now)
+        if retry_after is not None:
+            return "locked", retry_after
+        return "invalid", 0
+
+
+@app.before_request
+def require_dashboard_authentication():
+    """Protect the dashboard and API with HTTP Basic Auth and login lockout."""
+    if not DASHBOARD_USERNAME or not DASHBOARD_PASSWORD_HASH:
+        return Response(
+            "Dashboard credentials are not configured.\n",
+            status=503,
+            content_type="text/plain; charset=utf-8",
+        )
+
+    result, retry_after = _authenticate_request(
+        request.authorization, request.remote_addr or "unknown"
+    )
+    if result == "locked":
+        return Response(
+            "Too many failed login attempts. Try again later.\n",
+            status=429,
+            headers={"Retry-After": str(retry_after)},
+            content_type="text/plain; charset=utf-8",
+        )
+    if result != "authenticated":
         return Response(
             "Authentication required.\n",
             status=401,
@@ -118,6 +201,13 @@ def require_dashboard_authentication():
             content_type="text/plain; charset=utf-8",
         )
     return None
+
+
+@app.after_request
+def add_anti_framing_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
+    return response
 
 
 def is_loopback_host(host):
@@ -480,11 +570,54 @@ def api_data():
     })
 
 
-# Only run the development server when this file is executed directly.
-if __name__ == "__main__":
-    # Give a useful help message for both logging modes.
+def serve_with_gunicorn(host, port, tls_context):
+    try:
+        from gunicorn.app.base import BaseApplication
+    except ImportError as exc:
+        raise RuntimeError(
+            "Gunicorn is required; run pi_sensors/00_install.sh first"
+        ) from exc
+
+    bind_host = f"[{host}]" if ":" in host and not host.startswith("[") else host
+    options = {
+        "bind": f"{bind_host}:{port}",
+        "workers": 1,
+        "worker_class": "gthread",
+        "threads": 4,
+        "accesslog": "-",
+        "errorlog": "-",
+        "loglevel": "info",
+    }
+    if tls_context:
+        options["certfile"], options["keyfile"] = tls_context
+
+    class DashboardApplication(BaseApplication):
+        def __init__(self, application, server_options):
+            self.application = application
+            self.server_options = server_options
+            super().__init__()
+
+        def load_config(self):
+            for key, value in self.server_options.items():
+                if key in self.cfg.settings and value is not None:
+                    self.cfg.set(key.lower(), value)
+
+        def load(self):
+            return self.application
+
+    DashboardApplication(app, options).run()
+
+
+def main():
+    global CSV_PATH, PIR_CSV_PATH, COMBINED_CSV_PATH, STALE_AFTER_SECONDS
+
     parser = argparse.ArgumentParser(
         description="DHT22 + PIR dashboard (separate or combined CSV logs)"
+    )
+    parser.add_argument(
+        "--generate-password-hash",
+        action="store_true",
+        help="Prompt for a dashboard password and print its Werkzeug hash",
     )
 
     # These two options are for independent sensor logger scripts.
@@ -526,14 +659,29 @@ if __name__ == "__main__":
         help="Age after which the latest sensor record is marked stale (default: 10)",
     )
     args = parser.parse_args()
-    if not DASHBOARD_USERNAME or not DASHBOARD_PASSWORD:
+    if args.generate_password_hash:
+        password = getpass.getpass("Dashboard password (minimum 12 characters): ")
+        confirmation = getpass.getpass("Confirm dashboard password: ")
+        if len(password) < 12:
+            parser.error("dashboard password must be at least 12 characters")
+        if not hmac.compare_digest(password, confirmation):
+            parser.error("passwords do not match")
+        print(generate_password_hash(password))
+        return
+
+    if not DASHBOARD_USERNAME or not DASHBOARD_PASSWORD_HASH:
         parser.error(
-            "set DASHBOARD_USERNAME and DASHBOARD_PASSWORD in the environment"
+            "set DASHBOARD_USERNAME and DASHBOARD_PASSWORD_HASH in the environment"
         )
     if ":" in DASHBOARD_USERNAME:
         parser.error("DASHBOARD_USERNAME must not contain a colon")
-    if len(DASHBOARD_PASSWORD) < 12:
-        parser.error("DASHBOARD_PASSWORD must be at least 12 characters")
+    try:
+        check_password_hash(DASHBOARD_PASSWORD_HASH, "configuration-validation")
+    except (TypeError, ValueError):
+        parser.error(
+            "DASHBOARD_PASSWORD_HASH must be generated by "
+            "--generate-password-hash"
+        )
     if args.stale_after_seconds <= 0:
         parser.error("--stale-after-seconds must be greater than zero")
     if bool(args.tls_cert) != bool(args.tls_key):
@@ -557,16 +705,16 @@ if __name__ == "__main__":
     else:
         print(f"Dashboard source: DHT22 CSV {CSV_PATH}; PIR CSV {PIR_CSV_PATH}")
 
-    # Flask's built-in server is for controlled project trials, not production.
-    # Remote interfaces are served only with TLS and HTTP Basic authentication.
     tls_context = (
         (args.tls_cert, args.tls_key) if args.tls_cert and args.tls_key else None
     )
     scheme = "https" if tls_context else "http"
-    print(f"Dashboard listening at {scheme}://{args.host}:{args.port}")
-    app.run(
-        host=args.host,
-        port=args.port,
-        debug=False,
-        ssl_context=tls_context,
+    print(
+        f"Dashboard starting with Gunicorn at {scheme}://{args.host}:{args.port}",
+        flush=True,
     )
+    serve_with_gunicorn(args.host, args.port, tls_context)
+
+
+if __name__ == "__main__":
+    main()

@@ -102,14 +102,15 @@ order and the run ID remain important when correlating close events.
 The baseline and hardened variants are comparison conditions, not production
 deployment recommendations. Keep both on an owner-controlled private network;
 do not expose the baseline development server to the public internet. The
-hardened dashboard requires environment-provided HTTP Basic credentials and
-disables debug mode. By default it binds to loopback; a non-loopback bind
-requires a TLS certificate and private key. This does not replace a production
-WSGI server, reverse proxy, firewall policy, SSH hardening, or intrusion
-monitoring. The dashboard marks sensor rows stale after 10 seconds by default
-(configurable with `--stale-after-seconds`); stale display status is based on
-timestamps and is not an independent process-health monitor. Report only
-controls and results that have actually been configured and measured on the Pi.
+hardened dashboard requires a Werkzeug-hashed HTTP Basic password, disables
+debug mode, runs under Gunicorn, applies a per-address failed-login lockout,
+and sends anti-framing headers. By default it binds to loopback; a non-loopback
+bind requires a TLS certificate and private key. This does not replace a
+reverse proxy, firewall policy, SSH hardening, or intrusion monitoring. The
+dashboard marks sensor rows stale after 10 seconds by default (configurable
+with `--stale-after-seconds`); stale display status is based on timestamps and
+is not an independent process-health monitor. Report only controls and results
+that have actually been configured and measured on the Pi.
 
 ## Publishing sensor and scan evidence
 
