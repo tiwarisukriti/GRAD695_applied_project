@@ -136,6 +136,9 @@ policy is default-deny with TCP/22 and TCP/443 allowed only from the authorized
 client source. The collector can compare observed UFW rules with a Pi-visible
 source CIDR that you enter; it never changes firewall settings. Nmap results
 from the authorized test client are still needed to verify actual exposure.
+The comparison counts inbound `LIMIT` rules as permitting traffic; manually
+review the complete UFW output and hardened Nmap results even if it reports
+`PASS`.
 
 The direct-TLS command below is an optional standalone test mode, not the
 Nginx deployment:
@@ -206,7 +209,9 @@ the web lockout threshold, or reboot the Pi. Those checks can affect access or
 availability and require separately controlled evidence. The collector asks
 for a dashboard screenshot while its temporary dashboard is live, but does not
 independently validate screenshot contents. It checks UFW's active state but
-compares rules with the Pi-visible source CIDR entered at runtime; package
+compares rules with the Pi-visible source CIDR entered at runtime, counting
+both `ALLOW IN` and `LIMIT IN` rules as permitting; manually review the full
+firewall output and Nmap results even if the policy check passes. Package
 update status is a read-only APT simulation, and permission checks cover the
 project source paths only. Review and sanitize its ZIP before publishing.
 

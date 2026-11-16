@@ -903,7 +903,8 @@ def validate_ufw_policy(status_output, rules_output, expected_source):
     expected_source = normalize_source_cidr(expected_source)
     expected = {("22/tcp", expected_source), ("443/tcp", expected_source)}
     observed = set()
-    unparsed_allow_rules = []
+    unparsed_permitting_rules = []
+    observed_permitting_rules = []
     for line in rules_output.splitlines():
         match = re.match(
             r"^\s*\[\s*\d+\]\s+(.+?)\s+(ALLOW|DENY|REJECT|LIMIT)\s+"
@@ -914,7 +915,8 @@ def validate_ufw_policy(status_output, rules_output, expected_source):
         if not match:
             continue
         target, action, direction, source = match.groups()
-        if action.upper() != "ALLOW" or direction.upper() != "IN":
+        action = action.upper()
+        if action not in ("ALLOW", "LIMIT") or direction.upper() != "IN":
             continue
         target = re.sub(r"\s+\(v6\)$", "", target.strip(), flags=re.IGNORECASE)
         source = re.sub(r"\s+\(v6\)$", "", source.strip(), flags=re.IGNORECASE)
@@ -929,8 +931,14 @@ def validate_ufw_policy(status_output, rules_output, expected_source):
                 normalized_source = "unparsed:" + source
         rule = (target.lower(), normalized_source)
         observed.add(rule)
+        observed_permitting_rules.append({
+            "action": action,
+            "direction": "IN",
+            "port_or_service": target,
+            "source": normalized_source,
+        })
         if normalized_source.startswith("unparsed:"):
-            unparsed_allow_rules.append(line.strip())
+            unparsed_permitting_rules.append(line.strip())
 
     active = bool(re.search(
         r"^Status:\s*active\b", status_output, re.IGNORECASE | re.MULTILINE))
@@ -944,10 +952,15 @@ def validate_ufw_policy(status_output, rules_output, expected_source):
         "expected_allow_rules": sorted(
             "{} from {}".format(port, source) for port, source in expected
         ),
-        "observed_inbound_allow_rules": sorted(
-            "{} from {}".format(port, source) for port, source in observed
+        "observed_inbound_permitting_rules": sorted(
+            observed_permitting_rules,
+            key=lambda rule: (
+                rule["port_or_service"],
+                rule["source"],
+                rule["action"],
+            ),
         ),
-        "unparsed_allow_rules": unparsed_allow_rules,
+        "unparsed_permitting_rules": unparsed_permitting_rules,
         "reason": "" if compliant else
             "Expected exactly TCP/22 and TCP/443 from the entered CIDR, with an active firewall and default-deny incoming policy.",
     }
@@ -2084,7 +2097,8 @@ def build_summary(checks, context, trial_info, api_comparison):
         "  deployed service is checked separately using read-only service/config",
         "  observations and an unauthenticated HTTPS request to port 443.",
         "- UFW policy comparison uses the source CIDR entered for this run;",
-        "  verify that it is the source address the Pi actually sees.",
+        "  inbound ALLOW and LIMIT rules are counted as permitting. Verify the",
+        "  Pi-visible source and manually review full UFW output and Nmap results.",
         "- Package updates are simulated only; APT's local index may be stale.",
         "  Project file permissions are checked, not private-key or service permissions.",
         "- A screenshot is requested while the temporary dashboard is live;",

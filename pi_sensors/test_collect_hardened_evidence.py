@@ -40,6 +40,30 @@ class UfwPolicyTests(unittest.TestCase):
 
         self.assertFalse(result["compliant"])
 
+    def test_limit_in_is_counted_as_permitting_and_unexpected_rule_fails(self):
+        status = (
+            "Status: active\n"
+            "Default: deny (incoming), allow (outgoing), disabled (routed)\n"
+        )
+        rules = (
+            "[ 1] 22/tcp ALLOW IN 192.0.2.10\n"
+            "[ 2] 443/tcp ALLOW IN 192.0.2.10\n"
+            "[ 3] 5001/tcp LIMIT IN Anywhere\n"
+        )
+
+        result = validate_ufw_policy(status, rules, "192.0.2.10/32")
+
+        self.assertFalse(result["compliant"])
+        self.assertIn(
+            {
+                "action": "LIMIT",
+                "direction": "IN",
+                "port_or_service": "5001/tcp",
+                "source": "any",
+            },
+            result["observed_inbound_permitting_rules"],
+        )
+
     def test_requires_active_firewall_and_default_deny(self):
         rules = (
             "[ 1] 22/tcp ALLOW IN 192.0.2.10\n"
